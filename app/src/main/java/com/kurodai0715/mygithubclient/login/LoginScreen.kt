@@ -32,6 +32,8 @@ fun LoginScreen(
     val onLogin = { retainPat: Boolean, pat: String ->
         if (retainPat) {
             viewModel.savePatToPref(pat)
+        }else{
+            // TODO プリファレンスに保存されている値をクリアする。
         }
         viewModel.saveRetainPatToPref(retainPat)
         viewModel.loadProfile()
