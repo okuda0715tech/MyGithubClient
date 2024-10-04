@@ -63,6 +63,7 @@ fun LoginContent(
     
     Column(modifier = Modifier.padding(12.dp)) {
         Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
+        // TODO この入力エリアをマスクしたり解除できる機能を追加する。
         TextField(
             value = pat,
             onValueChange = onPatChanged,
