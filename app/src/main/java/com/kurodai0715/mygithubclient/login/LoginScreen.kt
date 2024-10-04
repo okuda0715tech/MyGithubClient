@@ -21,14 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kurodai0715.mygithubclient.R
-import com.kurodai0715.mygithubclient.profile.ProfileViewModel
 
 @Composable
 fun LoginScreen(
     goToNextScreen: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val onLogin = { retainPat: Boolean, pat: String ->
         if (retainPat) {
