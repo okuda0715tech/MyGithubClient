@@ -40,79 +40,8 @@ class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    /**
-     * 更新用
-     */
-    private val _loginUiState = MutableStateFlow(LoginUiState())
-
-    /**
-     * 読み取り専用
-     */
-    val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
-
-    init {
-        loadData()
-    }
-
-    /**
-     * 画面表示用データをデータレイヤーから取得する.
-     */
-    private fun loadData() {
-        profileRepository.getPatStream()
-            .onEach { savedPat ->
-                _loginUiState.update {
-                    it.copy(pat = savedPat)
-                }
-            }
-            .launchIn(viewModelScope)
-
-        profileRepository.getRetainPat()
-            .onEach { checked ->
-                _loginUiState.update {
-                    it.copy(retainPat = checked)
-                }
-            }
-            .launchIn(viewModelScope)
-    }
-
-    /**
-     * 画面表示用の PAT を更新する.
-     */
-    fun updatePat(newPat: String) {
-        _loginUiState.update {
-            it.copy(pat = newPat)
-        }
-    }
-
-    /**
-     * PAT を PreferenceDataStore に保存する.
-     */
-    fun savePatToPref(pat: String) {
-        viewModelScope.launch {
-            profileRepository.updatePat(pat)
-        }
-    }
-
-    fun updateRetainPat(checked: Boolean) {
-        Log.d("test", "checked = $checked")
-        _loginUiState.update {
-            it.copy(retainPat = checked)
-        }
-    }
-
-    fun saveRetainPatToPref(checked: Boolean) {
-        viewModelScope.launch {
-            profileRepository.updateRetainPat(checked)
-        }
-    }
-
-
-
-
-
-
-
-
+    // TODO ログイン画面とプロフィール画面で ViewModel を分けられるので、分ける。
+    //  これより下がプロフィール画面の処理なので、このあたりをわける。
 
     /**
      * 更新用
@@ -123,6 +52,8 @@ class ProfileViewModel @Inject constructor(
      * 読み取り専用
      */
     val profileUiState2: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
+
+
 
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
@@ -158,12 +89,6 @@ class ProfileViewModel @Inject constructor(
             started = WhileUiSubscribed,
             initialValue = ProfileUiState(isLoading = true)
         )
-
-    fun loadProfile() {
-        viewModelScope.launch {
-            profileRepository.loadProfile()
-        }
-    }
 
     fun snackbarMessageShown() {
         _userMessage.value = null

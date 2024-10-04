@@ -26,7 +26,7 @@ import com.kurodai0715.mygithubclient.profile.ProfileViewModel
 @Composable
 fun LoginScreen(
     goToNextScreen: () -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
 
@@ -36,6 +36,7 @@ fun LoginScreen(
         }
         viewModel.saveRetainPatToPref(retainPat)
         viewModel.loadProfile()
+        // TODO データのロードに失敗した場合は、画面遷移せずに、エラーメッセージを画面に表示する。
         goToNextScreen()
     }
 
