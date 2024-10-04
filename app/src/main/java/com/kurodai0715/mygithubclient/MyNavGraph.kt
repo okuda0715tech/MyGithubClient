@@ -30,7 +30,7 @@ fun MyNavGraph(
         modifier = modifier
     ) {
         composable(MyDestinations.LOGIN_ROUTE) {
-            LoginScreen(onLogin = { navActions.navigateToProfile() })
+            LoginScreen(goToNextScreen = { navActions.navigateToProfile() })
         }
         composable(MyDestinations.PROFILE_ROUTE) {
             ProfileScreen()

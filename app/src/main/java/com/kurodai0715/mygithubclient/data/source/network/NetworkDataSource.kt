@@ -2,6 +2,6 @@ package com.kurodai0715.mygithubclient.data.source.network
 
 interface NetworkDataSource {
 
-    suspend fun loadProfile() : NetworkProfile
+    suspend fun loadProfile(auth: String) : NetworkProfile
 
 }

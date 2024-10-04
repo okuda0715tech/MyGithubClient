@@ -9,9 +9,9 @@ class ProfileNetworkDataSource @Inject constructor() : NetworkDataSource {
 
     private val accessMutex = Mutex()
 
-    override suspend fun loadProfile(): NetworkProfile = accessMutex.withLock {
+    override suspend fun loadProfile(auth: String): NetworkProfile = accessMutex.withLock {
         // todo try{}catch{} が必要では？
-        GithubApi.retrofitService.getProfile()
+        GithubApi.retrofitService.getProfile(auth = auth)
     }
 
 }

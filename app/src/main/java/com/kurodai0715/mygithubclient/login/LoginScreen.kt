@@ -20,10 +20,39 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kurodai0715.mygithubclient.R
+import com.kurodai0715.mygithubclient.profile.ProfileViewModel
 
 @Composable
-fun LoginScreen(onLogin: () -> Unit) {
+fun LoginScreen(
+    goToNextScreen: () -> Unit,
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState2.collectAsStateWithLifecycle()
+
+    val onClick = { isSavingTokenChecked: Boolean, pat: String ->
+        if (isSavingTokenChecked) {
+            viewModel.savePatToPref(pat)
+        }
+        viewModel.getProfile(isSavingTokenChecked)
+        goToNextScreen()
+    }
+
+    LoginContent(
+        pat = uiState.pat,
+        onPatChanged = viewModel::updatePat,
+        onLogin = onClick
+    )
+}
+
+@Composable
+fun LoginContent(
+    pat: String,
+    onPatChanged: (String) -> Unit,
+    onLogin: (Boolean, String) -> Unit,
+) {
 
     var isSaveTokenChecked by remember {
         mutableStateOf(false)
@@ -32,8 +61,8 @@ fun LoginScreen(onLogin: () -> Unit) {
     Column(modifier = Modifier.padding(12.dp)) {
         Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = pat,
+            onValueChange = onPatChanged,
             label = { Text(text = "hint") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -46,7 +75,7 @@ fun LoginScreen(onLogin: () -> Unit) {
         ) {
             Checkbox(
                 checked = isSaveTokenChecked,
-                onCheckedChange = null,
+                onCheckedChange = { isSaveTokenChecked = it },
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
@@ -58,7 +87,9 @@ fun LoginScreen(onLogin: () -> Unit) {
             )
         }
         Button(
-            onClick = onLogin,
+            onClick = {
+                onLogin(isSaveTokenChecked, pat)
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = stringResource(id = R.string.login_button_label))
@@ -69,5 +100,5 @@ fun LoginScreen(onLogin: () -> Unit) {
 @Preview
 @Composable
 private fun PreviewLoginScreen() {
-    LoginScreen(onLogin = { })
+    LoginScreen(goToNextScreen = { })
 }

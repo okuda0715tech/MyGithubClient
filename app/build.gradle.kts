@@ -81,6 +81,7 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.dataStore.preferences)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

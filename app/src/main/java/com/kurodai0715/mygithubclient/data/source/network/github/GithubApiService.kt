@@ -26,14 +26,12 @@ private val retrofit = Retrofit.Builder()
 
 interface GithubApiService {
 
-    // TODO パーソナルアクセストークンのパラメータ化
     @Headers(
         "Accept: application/vnd.github+json",
-        "Authorization: Bearer ここにパーソナルアクセストークンを渡す",
         "X-GitHub-Api-Version: 2022-11-28"
     )
     @GET("user")
-    suspend fun getProfile(): NetworkProfile
+    suspend fun getProfile(@Header("Authorization") auth: String): NetworkProfile
 
 }
 
