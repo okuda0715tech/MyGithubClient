@@ -14,12 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ProfileUiState(
@@ -41,12 +37,12 @@ class ProfileViewModel @Inject constructor(
     /**
      * 更新用
      */
-    private val _profileUiState = MutableStateFlow(ProfileUiState())
+    private val _uiState = MutableStateFlow(ProfileUiState())
 
     /**
      * 読み取り専用
      */
-    val profileUiState2: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
+    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
 
 
