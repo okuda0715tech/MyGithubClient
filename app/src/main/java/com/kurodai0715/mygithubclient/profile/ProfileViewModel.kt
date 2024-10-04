@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,7 +29,8 @@ data class ProfileUiState(
 )
 
 data class LoginUiState(
-    val pat: String = ""
+    val pat: String = "",
+    val retainPat: Boolean = false
 )
 
 const val TAG = "ProfileViewModel"
@@ -55,13 +58,21 @@ class ProfileViewModel @Inject constructor(
      * 画面表示用データをデータレイヤーから取得する.
      */
     private fun loadData() {
-        viewModelScope.launch {
-            profileRepository.getPatStream().collect { savedPat ->
+        profileRepository.getPatStream()
+            .onEach { savedPat ->
                 _uiState.update {
                     it.copy(pat = savedPat)
                 }
             }
-        }
+            .launchIn(viewModelScope)
+
+        profileRepository.getRetainPat()
+            .onEach { checked ->
+                _uiState.update {
+                    it.copy(retainPat = checked)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     /**
@@ -79,6 +90,19 @@ class ProfileViewModel @Inject constructor(
     fun savePatToPref(pat: String) {
         viewModelScope.launch {
             profileRepository.updatePat(pat)
+        }
+    }
+
+    fun updateRetainPat(checked: Boolean) {
+        Log.d("test", "checked = $checked")
+        _uiState.update {
+            it.copy(retainPat = checked)
+        }
+    }
+
+    fun saveRetainPatToPref(checked: Boolean) {
+        viewModelScope.launch {
+            profileRepository.updateRetainPat(checked)
         }
     }
 
@@ -117,10 +141,10 @@ class ProfileViewModel @Inject constructor(
             initialValue = ProfileUiState(isLoading = true)
         )
 
-    fun getProfile(savePat: Boolean) {
+    fun getProfile() {
         _isLoading.value = true
         viewModelScope.launch {
-            profileRepository.getProfile(savePat)
+            profileRepository.getProfile()
             _isLoading.value = true
         }
     }

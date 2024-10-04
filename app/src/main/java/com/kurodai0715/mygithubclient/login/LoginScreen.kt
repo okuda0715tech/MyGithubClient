@@ -1,5 +1,6 @@
 package com.kurodai0715.mygithubclient.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,18 +30,23 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState2.collectAsStateWithLifecycle()
 
-    val onClick = { isSavingTokenChecked: Boolean, pat: String ->
-        if (isSavingTokenChecked) {
+    val onLogin = { retainPat: Boolean, pat: String ->
+        if (retainPat) {
             viewModel.savePatToPref(pat)
         }
-        viewModel.getProfile(isSavingTokenChecked)
+        viewModel.saveRetainPatToPref(retainPat)
+        viewModel.getProfile()
         goToNextScreen()
     }
+
+    Log.d("test", "uiState.retainPat = ${uiState.retainPat}")
 
     LoginContent(
         pat = uiState.pat,
         onPatChanged = viewModel::updatePat,
-        onLogin = onClick
+        retainPat = uiState.retainPat,
+        onRetainPatChanged = viewModel::updateRetainPat,
+        onLogin = onLogin
     )
 }
 
@@ -51,13 +54,11 @@ fun LoginScreen(
 fun LoginContent(
     pat: String,
     onPatChanged: (String) -> Unit,
+    retainPat: Boolean,
+    onRetainPatChanged: (Boolean) -> Unit,
     onLogin: (Boolean, String) -> Unit,
 ) {
-
-    var isSaveTokenChecked by remember {
-        mutableStateOf(false)
-    }
-
+    
     Column(modifier = Modifier.padding(12.dp)) {
         Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
         TextField(
@@ -69,13 +70,14 @@ fun LoginContent(
 
         Row(
             Modifier.toggleable(
-                value = isSaveTokenChecked,
+                value = retainPat,
                 role = Role.Checkbox,
-                onValueChange = { isSaveTokenChecked = !isSaveTokenChecked })
+                onValueChange = onRetainPatChanged
+            )
         ) {
             Checkbox(
-                checked = isSaveTokenChecked,
-                onCheckedChange = { isSaveTokenChecked = it },
+                checked = retainPat,
+                onCheckedChange = null,
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
@@ -90,7 +92,7 @@ fun LoginContent(
         }
         Button(
             onClick = {
-                onLogin(isSaveTokenChecked, pat)
+                onLogin(retainPat, pat)
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {

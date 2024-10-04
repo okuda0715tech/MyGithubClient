@@ -11,7 +11,6 @@ import com.kurodai0715.mygithubclient.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,12 +41,24 @@ class DefaultProfileRepository @Inject constructor(
         }
     }
 
+    override fun getRetainPat(): Flow<Boolean> {
+        return githubPreferences.retainPatChecked
+    }
+
+    override fun updateRetainPat(checked: Boolean) {
+        scope.launch {
+            withContext(dispatcher){
+                githubPreferences.updateRetainPat(checked)
+            }
+        }
+    }
+
     /**
      * サーバーからデータをロードして、ローカルに保存する。
      *
      * ローカルのデータは保存する前にクリアする。
      */
-    override suspend fun getProfile(savePat: Boolean) {
+    override suspend fun getProfile() {
         Log.v(TAG, "refresh is started.")
 
         withContext(dispatcher) {

@@ -1,7 +1,6 @@
 package com.kurodai0715.mygithubclient.data
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 
 interface ProfileRepository {
 
@@ -9,7 +8,11 @@ interface ProfileRepository {
 
     fun updatePat(pat: String)
 
-    suspend fun getProfile(savePat: Boolean)
+    fun getRetainPat(): Flow<Boolean>
+
+    fun updateRetainPat(checked: Boolean)
+
+    suspend fun getProfile()
 
     fun getProfileStream(): Flow<Profile?>
 
