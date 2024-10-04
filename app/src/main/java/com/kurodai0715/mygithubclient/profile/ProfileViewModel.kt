@@ -28,11 +28,6 @@ data class ProfileUiState(
     val userMessage: Int? = null
 )
 
-data class LoginUiState(
-    val pat: String = "",
-    val retainPat: Boolean = false
-)
-
 const val TAG = "ProfileViewModel"
 
 @HiltViewModel
