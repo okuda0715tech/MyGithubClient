@@ -83,7 +83,9 @@ fun LoginContent(
 
             Text(
                 text = stringResource(id = R.string.save_token_checkbox_label),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.CenterVertically)
             )
         }
         Button(
