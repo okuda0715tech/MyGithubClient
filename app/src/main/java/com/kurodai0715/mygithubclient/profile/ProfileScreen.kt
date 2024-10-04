@@ -2,7 +2,6 @@ package com.kurodai0715.mygithubclient.profile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -30,7 +29,7 @@ fun ProfileScreen(
     ) { paddingValues ->
 
 
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        val uiState by viewModel.profileUiState.collectAsStateWithLifecycle()
 
         ProfileContent(
             profile = uiState.profile,

@@ -112,7 +112,7 @@ class ProfileViewModel @Inject constructor(
         .map { handleProfile(it) }
         .catch { emit(Async.Error(R.string.loading_profile_error)) }
 
-    val uiState: StateFlow<ProfileUiState> = combine(
+    val profileUiState: StateFlow<ProfileUiState> = combine(
         _userMessage, _isLoading, _profileAsync
     ) { userMessage, isLoading, profileAsync ->
         when (profileAsync) {
