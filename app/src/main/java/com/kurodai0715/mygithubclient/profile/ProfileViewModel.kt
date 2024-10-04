@@ -14,14 +14,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 data class ProfileUiState(
-    val profile: Profile? = null,
-    val isLoading: Boolean = false,
-    val userMessage: Int? = null
+    val profile: Profile? = null
 )
 
 const val TAG = "ProfileViewModel"
@@ -44,52 +45,16 @@ class ProfileViewModel @Inject constructor(
      */
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-
-
-    private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
-    private val _isLoading = MutableStateFlow(false)
-    private val _profileAsync = profileRepository.fetchProfileStream()
-        .map { handleProfile(it) }
-        .catch { emit(Async.Error(R.string.loading_profile_error)) }
-
-    val profileUiState: StateFlow<ProfileUiState> = combine(
-        _userMessage, _isLoading, _profileAsync
-    ) { userMessage, isLoading, profileAsync ->
-        when (profileAsync) {
-            Async.Loading -> {
-                Log.i(TAG, "Async.Loading")
-                ProfileUiState(isLoading = true)
-            }
-
-            is Async.Error -> {
-                Log.i(TAG, "Async.Error")
-                ProfileUiState(userMessage = userMessage)
-            }
-
-            is Async.Success -> {
-                Log.i(TAG, "Async.Success")
-                ProfileUiState(
-                    profile = profileAsync.data,
-                    isLoading = isLoading
-                )
-            }
-        }
-    }
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = ProfileUiState(isLoading = true)
-        )
-
-    fun snackbarMessageShown() {
-        _userMessage.value = null
+    init {
+        getData()
     }
 
-    private fun handleProfile(profile: Profile?): Async<Profile?> {
-        if (profile == null) {
-            return Async.Error(R.string.profile_not_found)
-        }
-        Log.v(TAG, "Async.Success with $profile")
-        return Async.Success(profile)
+    private fun getData() {
+        profileRepository.fetchProfileStream().onEach { localProfile ->
+            _uiState.update {
+                it.copy(profile = localProfile)
+            }
+        }.launchIn(viewModelScope)
     }
+
 }

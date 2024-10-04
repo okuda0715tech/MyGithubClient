@@ -29,21 +29,12 @@ fun ProfileScreen(
     ) { paddingValues ->
 
 
-        val uiState by viewModel.profileUiState.collectAsStateWithLifecycle()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
         ProfileContent(
             profile = uiState.profile,
             modifier = Modifier.padding(paddingValues)
         )
-
-        uiState.userMessage?.let { userMessage ->
-            val snackbarText = stringResource(userMessage)
-            LaunchedEffect(viewModel, userMessage, snackbarText) {
-                snackbarHostState.showSnackbar(message = snackbarText)
-                // メッセージをクリア
-                viewModel.snackbarMessageShown()
-            }
-        }
     }
 
 }
