@@ -106,9 +106,27 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+
+
+
+
+
+
+
+
+    /**
+     * 更新用
+     */
+    private val _profileUiState = MutableStateFlow(ProfileUiState())
+
+    /**
+     * 読み取り専用
+     */
+    val profileUiState2: StateFlow<ProfileUiState> = _profileUiState.asStateFlow()
+
     private val _userMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
     private val _isLoading = MutableStateFlow(false)
-    private val _profileAsync = profileRepository.getProfileStream()
+    private val _profileAsync = profileRepository.fetchProfileStream()
         .map { handleProfile(it) }
         .catch { emit(Async.Error(R.string.loading_profile_error)) }
 
@@ -141,11 +159,9 @@ class ProfileViewModel @Inject constructor(
             initialValue = ProfileUiState(isLoading = true)
         )
 
-    fun getProfile() {
-        _isLoading.value = true
+    fun loadProfile() {
         viewModelScope.launch {
-            profileRepository.getProfile()
-            _isLoading.value = true
+            profileRepository.loadProfile()
         }
     }
 

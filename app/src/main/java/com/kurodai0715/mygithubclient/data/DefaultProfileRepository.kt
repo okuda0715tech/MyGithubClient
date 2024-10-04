@@ -58,7 +58,7 @@ class DefaultProfileRepository @Inject constructor(
      *
      * ローカルのデータは保存する前にクリアする。
      */
-    override suspend fun getProfile() {
+    override suspend fun loadProfile() {
         Log.v(TAG, "refresh is started.")
 
         withContext(dispatcher) {
@@ -73,7 +73,10 @@ class DefaultProfileRepository @Inject constructor(
         }
     }
 
-    override fun getProfileStream(): Flow<Profile?> {
+    /**
+     * ローカルからデータを取得する.
+     */
+    override fun fetchProfileStream(): Flow<Profile?> {
         return localDataSource.observe().map {
             Log.v(TAG, "localDataSource is changed.")
             it?.toExternal()

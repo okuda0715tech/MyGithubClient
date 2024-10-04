@@ -35,7 +35,7 @@ fun LoginScreen(
             viewModel.savePatToPref(pat)
         }
         viewModel.saveRetainPatToPref(retainPat)
-        viewModel.getProfile()
+        viewModel.loadProfile()
         goToNextScreen()
     }
 
