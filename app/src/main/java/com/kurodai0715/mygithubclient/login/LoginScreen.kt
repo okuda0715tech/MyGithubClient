@@ -28,7 +28,7 @@ fun LoginScreen(
     goToNextScreen: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState2.collectAsStateWithLifecycle()
+    val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
 
     val onLogin = { retainPat: Boolean, pat: String ->
         if (retainPat) {

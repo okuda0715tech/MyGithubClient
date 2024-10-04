@@ -43,12 +43,12 @@ class ProfileViewModel @Inject constructor(
     /**
      * 更新用
      */
-    private val _uiState = MutableStateFlow(LoginUiState())
+    private val _loginUiState = MutableStateFlow(LoginUiState())
 
     /**
      * 読み取り専用
      */
-    val uiState2: StateFlow<LoginUiState> = _uiState.asStateFlow()
+    val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 
     init {
         loadData()
@@ -60,7 +60,7 @@ class ProfileViewModel @Inject constructor(
     private fun loadData() {
         profileRepository.getPatStream()
             .onEach { savedPat ->
-                _uiState.update {
+                _loginUiState.update {
                     it.copy(pat = savedPat)
                 }
             }
@@ -68,7 +68,7 @@ class ProfileViewModel @Inject constructor(
 
         profileRepository.getRetainPat()
             .onEach { checked ->
-                _uiState.update {
+                _loginUiState.update {
                     it.copy(retainPat = checked)
                 }
             }
@@ -79,7 +79,7 @@ class ProfileViewModel @Inject constructor(
      * 画面表示用の PAT を更新する.
      */
     fun updatePat(newPat: String) {
-        _uiState.update {
+        _loginUiState.update {
             it.copy(pat = newPat)
         }
     }
@@ -95,7 +95,7 @@ class ProfileViewModel @Inject constructor(
 
     fun updateRetainPat(checked: Boolean) {
         Log.d("test", "checked = $checked")
-        _uiState.update {
+        _loginUiState.update {
             it.copy(retainPat = checked)
         }
     }
