@@ -60,6 +60,8 @@ fun LoginContent(
     onRetainPatChanged: (Boolean) -> Unit,
     onLogin: (Boolean, String) -> Unit,
 ) {
+    // TODO パーソナルアクセストークンの取得方法の説明を軽く追加する。
+    //  例えば、公式サイトの URL リンクだけでも OK。
     
     Column(modifier = Modifier.padding(12.dp)) {
         Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
