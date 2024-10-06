@@ -72,7 +72,7 @@ class LoginViewModel @Inject constructor(
     }
 
     /**
-     * PAT を PreferenceDataStore に保存する.
+     * PAT をローカルに保存する.
      */
     fun savePatToPref(pat: String) {
         viewModelScope.launch {
