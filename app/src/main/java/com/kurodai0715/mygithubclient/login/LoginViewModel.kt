@@ -80,6 +80,11 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * PAT をアプリに保存するかどうかのチェックボックスの状態を更新する.
+     *
+     * プリファレンスは更新せず、画面の状態のみを更新する。
+     */
     fun updateRetainPat(checked: Boolean) {
         Log.d("test", "checked = $checked")
         _uiState.update {
@@ -87,12 +92,20 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * PAT をアプリに保存するかどうかのチェックボックスの状態を更新する.
+     *
+     * プリファレンスを更新する。それに連動して、画面の状態も自動的に更新される。
+     */
     fun saveRetainPatToPref(checked: Boolean) {
         viewModelScope.launch {
             profileRepository.updateRetainPat(checked)
         }
     }
 
+    /**
+     * サーバーからデータをロードして、ローカルに保存する。
+     */
     fun loadProfile() {
         viewModelScope.launch {
             profileRepository.loadProfile()
