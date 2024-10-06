@@ -11,6 +11,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kurodai0715.mygithubclient.R
 
+
 @Composable
 fun LoginScreen(
     goToNextScreen: () -> Unit,
@@ -32,15 +34,16 @@ fun LoginScreen(
     val onLogin = { retainPat: Boolean, pat: String ->
         if (retainPat) {
             viewModel.savePatToPref(pat)
-        }else{
+        } else {
             viewModel.savePatToPref("")
+            // Preference の状態が元々空文字だった場合は、状態が更新されないため、状態が通知されません。
+            // そのため、ユーザーが入力した PAT を uiState から明示的にクリアする必要があります。
+            viewModel.updatePat("")
         }
         viewModel.saveRetainPatToPref(retainPat)
         viewModel.loadProfile(pat)
         goToNextScreen()
     }
-
-    Log.d("test", "uiState.retainPat = ${uiState.retainPat}")
 
     LoginContent(
         pat = uiState.pat,
@@ -61,16 +64,14 @@ fun LoginContent(
 ) {
     // TODO パーソナルアクセストークンの取得方法の説明を軽く追加する。
     //  例えば、公式サイトの URL リンクだけでも OK。
-    
+
     Column(modifier = Modifier.padding(12.dp)) {
         Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
         // TODO この入力エリアをマスクしたり解除できる機能を追加する。
-        // fixme PAT の保存チェックを外した状態でログインしてから、スワイプバックすると PAT が TextField に
-        //  残っている不具合があるため、修正する。
         TextField(
             value = pat,
             onValueChange = onPatChanged,
-            label = { Text(text = "hint") },
+            label = { Text(text = "Personal Access Token") },
             modifier = Modifier.fillMaxWidth()
         )
 
