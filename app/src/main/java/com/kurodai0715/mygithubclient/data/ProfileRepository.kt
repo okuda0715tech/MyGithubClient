@@ -12,7 +12,7 @@ interface ProfileRepository {
 
     fun updateRetainPat(checked: Boolean)
 
-    suspend fun loadProfile()
+    suspend fun loadProfile(pat: String = "")
 
     fun fetchProfileStream(): Flow<Profile?>
 

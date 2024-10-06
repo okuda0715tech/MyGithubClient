@@ -106,9 +106,9 @@ class LoginViewModel @Inject constructor(
     /**
      * サーバーからデータをロードして、ローカルに保存する。
      */
-    fun loadProfile() {
+    fun loadProfile(pat: String = "") {
         viewModelScope.launch {
-            profileRepository.loadProfile()
+            profileRepository.loadProfile(pat)
         }
     }
 

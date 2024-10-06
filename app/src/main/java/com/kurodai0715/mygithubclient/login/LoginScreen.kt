@@ -33,11 +33,10 @@ fun LoginScreen(
         if (retainPat) {
             viewModel.savePatToPref(pat)
         }else{
-            // TODO プリファレンスに保存されている値をクリアする。
+            viewModel.savePatToPref("")
         }
         viewModel.saveRetainPatToPref(retainPat)
-        viewModel.loadProfile()
-        // TODO データのロードに失敗した場合は、画面遷移せずに、エラーメッセージを画面に表示する。
+        viewModel.loadProfile(pat)
         goToNextScreen()
     }
 
@@ -66,6 +65,8 @@ fun LoginContent(
     Column(modifier = Modifier.padding(12.dp)) {
         Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
         // TODO この入力エリアをマスクしたり解除できる機能を追加する。
+        // fixme PAT の保存チェックを外した状態でログインしてから、スワイプバックすると PAT が TextField に
+        //  残っている不具合があるため、修正する。
         TextField(
             value = pat,
             onValueChange = onPatChanged,

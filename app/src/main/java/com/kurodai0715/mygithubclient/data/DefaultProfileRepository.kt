@@ -4,6 +4,7 @@ import android.util.Log
 import com.kurodai0715.mygithubclient.data.source.local.GithubPreferences
 import com.kurodai0715.mygithubclient.data.source.local.ProfileDao
 import com.kurodai0715.mygithubclient.data.source.network.NetworkDataSource
+import com.kurodai0715.mygithubclient.data.source.network.UserApiResponse
 import com.kurodai0715.mygithubclient.data.source.toExternal
 import com.kurodai0715.mygithubclient.data.source.toLocal
 import com.kurodai0715.mygithubclient.di.ApplicationScope
@@ -28,6 +29,18 @@ class DefaultProfileRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : ProfileRepository {
 
+    /**
+     * ログイン後に、何らかの API を実行したい場合は、この PAT を使用する。
+     */
+    private var _pat = ""
+
+    init {
+        scope.launch {
+            githubPreferences.patFlow.collect { newPat ->
+                _pat = newPat
+            }
+        }
+    }
 
     override fun getPatStream(): Flow<String> {
         return githubPreferences.patFlow
@@ -47,7 +60,7 @@ class DefaultProfileRepository @Inject constructor(
 
     override fun updateRetainPat(checked: Boolean) {
         scope.launch {
-            withContext(dispatcher){
+            withContext(dispatcher) {
                 githubPreferences.updateRetainPat(checked)
             }
         }
@@ -58,17 +71,19 @@ class DefaultProfileRepository @Inject constructor(
      *
      * ローカルのデータは保存する前にクリアする。
      */
-    override suspend fun loadProfile() {
+    override suspend fun loadProfile(pat: String) {
         Log.v(TAG, "refresh is started.")
 
         withContext(dispatcher) {
-            githubPreferences.patFlow.collect { pat ->
-                val patHeader = "Bearer $pat"
-                val remoteProfile = networkDataSource.loadProfile(patHeader)
-                Log.d(TAG, "remoteProfile = $remoteProfile")
+            val patHeader = "Bearer $pat"
+            val remoteProfile = networkDataSource.loadProfile(patHeader)
+            Log.d(TAG, "remoteProfile = $remoteProfile")
 
+            if (remoteProfile is UserApiResponse.Success) {
                 // DB へ登録する。
-                localDataSource.upsert(remoteProfile.toLocal())
+                localDataSource.upsert(remoteProfile.profile.toLocal())
+            } else if (remoteProfile is UserApiResponse.Error) {
+                Log.v(TAG, "network error occurred when user api executed.")
             }
         }
     }

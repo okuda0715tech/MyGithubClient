@@ -2,6 +2,11 @@ package com.kurodai0715.mygithubclient.data.source.network
 
 import com.squareup.moshi.Json
 
+sealed class UserApiResponse {
+    data class Success(val profile: NetworkProfile): UserApiResponse()
+    data class Error(val e: retrofit2.HttpException): UserApiResponse()
+}
+
 data class NetworkProfile(
     val login: String,
     val id: Int,
