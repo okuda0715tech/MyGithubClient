@@ -16,41 +16,40 @@ import javax.inject.Inject
 // TODO Hilt で依存関係の注入ができないか検討する。
 val Context.githubPrefDataStore: DataStore<Preferences> by preferencesDataStore(name = "github_preferences")
 
+// Preference のキー名
 private const val KEY_NAME_PERSONAL_ACCESS_TOKEN = "pat"
-
-// example_counter とうい名前のキーを定義します。
-// Int 型の値を格納することができます。
-val PAT = stringPreferencesKey(KEY_NAME_PERSONAL_ACCESS_TOKEN)
-
 private const val KEY_NAME_RETAIN_PAT = "retain_pat"
 
+// Preference のキー名とデータ型をバインドしたオブジェクト
+val PAT = stringPreferencesKey(KEY_NAME_PERSONAL_ACCESS_TOKEN)
 val RETAIN_PAT = booleanPreferencesKey(KEY_NAME_RETAIN_PAT)
+
+private const val TAG = "GithubPreferences"
 
 class GithubPreferences @Inject constructor(@ApplicationContext private val context: Context) {
 
     val patFlow: Flow<String> = context.githubPrefDataStore.data
         .map { githubPref ->
-            Log.d("test", "githubPref[PAT] = ${githubPref[PAT]}")
-            // タイプセーフではありません。
+            Log.d(TAG, "githubPref[PAT] = ${githubPref[PAT]}")
             githubPref[PAT] ?: ""
         }
 
     suspend fun updatePat(pat: String) {
         context.githubPrefDataStore.edit { githubPref ->
-            Log.d("test", "save githubPref[PAT] (${githubPref[PAT]})}")
+            Log.d(TAG, "save githubPref[PAT] (${githubPref[PAT]})}")
             githubPref[PAT] = pat
         }
     }
 
     val retainPatChecked: Flow<Boolean> = context.githubPrefDataStore.data
         .map { githubPref ->
-            Log.d("test", "githubPref[RETAIN_PAT] = ${githubPref[RETAIN_PAT]}")
+            Log.d(TAG, "githubPref[RETAIN_PAT] = ${githubPref[RETAIN_PAT]}")
             githubPref[RETAIN_PAT] ?: false
         }
 
     suspend fun updateRetainPat(checked: Boolean) {
         context.githubPrefDataStore.edit { githubPref ->
-            Log.d("test", "save githubPref[RETAIN_PAT] (${githubPref[RETAIN_PAT]})}")
+            Log.d(TAG, "save githubPref[RETAIN_PAT] (${githubPref[RETAIN_PAT]})}")
             githubPref[RETAIN_PAT] = checked
         }
     }

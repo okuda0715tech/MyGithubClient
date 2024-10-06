@@ -48,6 +48,7 @@ class LoginViewModel @Inject constructor(
         profileRepository.getPatStream()
             .onEach { savedPat ->
                 _uiState.update {
+                    Log.d(TAG, "savedPat = $savedPat")
                     it.copy(pat = savedPat)
                 }
             }
