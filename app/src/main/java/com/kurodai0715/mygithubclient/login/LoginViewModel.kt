@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kurodai0715.mygithubclient.data.ProfileRepository
+import com.kurodai0715.mygithubclient.data.source.local.GithubPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,14 +17,16 @@ import javax.inject.Inject
 
 data class LoginUiState(
     val pat: String = "",
-    val retainPat: Boolean = false
+    val patVisible: Boolean = false,
+    val retainPat: Boolean = false,
 )
 
 const val TAG = "LoginViewModel"
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val githubPrefRepo: GithubPreferencesRepository,
 ) : ViewModel() {
 
     /**
@@ -45,22 +47,17 @@ class LoginViewModel @Inject constructor(
      * 画面表示用データをデータレイヤーから取得する.
      */
     private fun loadData() {
-        profileRepository.getPatStream()
-            .onEach { savedPat ->
-                _uiState.update {
-                    Log.d(TAG, "savedPat = $savedPat")
-                    it.copy(pat = savedPat)
-                }
+        viewModelScope.launch {
+            val githubPreferences = githubPrefRepo.githubPreferences.first()
+            Log.d(TAG, "GithubPreferences = $githubPreferences")
+            _uiState.update {
+                it.copy(
+                    pat = githubPreferences.pat,
+                    patVisible = githubPreferences.patVisibility,
+                    retainPat = githubPreferences.retainPat
+                )
             }
-            .launchIn(viewModelScope)
-
-        profileRepository.getRetainPat()
-            .onEach { checked ->
-                _uiState.update {
-                    it.copy(retainPat = checked)
-                }
-            }
-            .launchIn(viewModelScope)
+        }
     }
 
     /**
@@ -77,7 +74,30 @@ class LoginViewModel @Inject constructor(
      */
     fun savePatToPref(pat: String) {
         viewModelScope.launch {
-            profileRepository.updatePat(pat)
+            githubPrefRepo.updatePat(pat)
+        }
+    }
+
+    /**
+     * PAT の表示/非表示状態を更新する.
+     *
+     * プリファレンスを更新する。画面の状態は自動的には更新されないため、別途更新が必要です。
+     */
+    fun savePatVisibilityToPref(checked: Boolean) {
+        viewModelScope.launch {
+            githubPrefRepo.updatePatVisibility(checked)
+        }
+    }
+
+    /**
+     * PAT のマスクの有無の状態を更新する.
+     *
+     * プリファレンスは更新せず、画面の状態のみを更新する。
+     */
+    fun updatePatVisibility(checked: Boolean) {
+        Log.d(TAG, "checked = $checked")
+        _uiState.update {
+            it.copy(patVisible = checked)
         }
     }
 
@@ -87,7 +107,7 @@ class LoginViewModel @Inject constructor(
      * プリファレンスは更新せず、画面の状態のみを更新する。
      */
     fun updateRetainPat(checked: Boolean) {
-        Log.d("test", "checked = $checked")
+        Log.d(TAG, "checked = $checked")
         _uiState.update {
             it.copy(retainPat = checked)
         }
@@ -96,11 +116,11 @@ class LoginViewModel @Inject constructor(
     /**
      * PAT をアプリに保存するかどうかのチェックボックスの状態を更新する.
      *
-     * プリファレンスを更新する。それに連動して、画面の状態も自動的に更新される。
+     * プリファレンスを更新する。画面の状態は自動的には更新されないため、別途更新が必要です。
      */
     fun saveRetainPatToPref(checked: Boolean) {
         viewModelScope.launch {
-            profileRepository.updateRetainPat(checked)
+            githubPrefRepo.updateRetainPat(checked)
         }
     }
 

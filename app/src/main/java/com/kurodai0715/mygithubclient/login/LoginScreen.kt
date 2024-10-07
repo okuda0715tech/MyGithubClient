@@ -1,22 +1,27 @@
 package com.kurodai0715.mygithubclient.login
 
-import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,7 +36,7 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val onLogin = { retainPat: Boolean, pat: String ->
+    val onLogin = { pat: String, patVisible: Boolean, retainPat: Boolean ->
         if (retainPat) {
             viewModel.savePatToPref(pat)
         } else {
@@ -40,6 +45,7 @@ fun LoginScreen(
             // そのため、ユーザーが入力した PAT を uiState から明示的にクリアする必要があります。
             viewModel.updatePat("")
         }
+        viewModel.savePatVisibilityToPref(patVisible)
         viewModel.saveRetainPatToPref(retainPat)
         viewModel.loadProfile(pat)
         goToNextScreen()
@@ -48,6 +54,8 @@ fun LoginScreen(
     LoginContent(
         pat = uiState.pat,
         onPatChanged = viewModel::updatePat,
+        patVisible = uiState.patVisible,
+        onClickPasswordVisibility = viewModel::updatePatVisibility,
         retainPat = uiState.retainPat,
         onRetainPatChanged = viewModel::updateRetainPat,
         onLogin = onLogin
@@ -58,9 +66,11 @@ fun LoginScreen(
 fun LoginContent(
     pat: String,
     onPatChanged: (String) -> Unit,
+    patVisible: Boolean,
+    onClickPasswordVisibility: (Boolean) -> Unit,
     retainPat: Boolean,
     onRetainPatChanged: (Boolean) -> Unit,
-    onLogin: (Boolean, String) -> Unit,
+    onLogin: (String, Boolean, Boolean) -> Unit,
 ) {
     // TODO パーソナルアクセストークンの取得方法の説明を軽く追加する。
     //  例えば、公式サイトの URL リンクだけでも OK。
@@ -72,7 +82,33 @@ fun LoginContent(
             value = pat,
             onValueChange = onPatChanged,
             label = { Text(text = "Personal Access Token") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = if (patVisible) {
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            leadingIcon = {
+                // fixme アイコンをタップすると、チェックボックスとトークン文字列が初期値になる不具合がある。
+                if (patVisible) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_visibility_on_24),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .clickable { onClickPasswordVisibility(false) }
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_visibility_off_24),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .clickable { onClickPasswordVisibility(true) }
+                    )
+                }
+            }
         )
 
         Row(
@@ -99,7 +135,7 @@ fun LoginContent(
         }
         Button(
             onClick = {
-                onLogin(retainPat, pat)
+                onLogin(pat, patVisible, retainPat)
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {

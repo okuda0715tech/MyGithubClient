@@ -2,6 +2,7 @@ package com.kurodai0715.mygithubclient.data
 
 import android.util.Log
 import com.kurodai0715.mygithubclient.data.source.local.GithubPreferences
+import com.kurodai0715.mygithubclient.data.source.local.GithubPreferencesRepository
 import com.kurodai0715.mygithubclient.data.source.local.ProfileDao
 import com.kurodai0715.mygithubclient.data.source.network.NetworkDataSource
 import com.kurodai0715.mygithubclient.data.source.network.UserApiResponse
@@ -24,47 +25,9 @@ const val TAG = "DefaultProfileRepository"
 class DefaultProfileRepository @Inject constructor(
     private val networkDataSource: NetworkDataSource,
     private val localDataSource: ProfileDao,
-    private val githubPreferences: GithubPreferences,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope,
 ) : ProfileRepository {
-
-    /**
-     * ログイン後に、何らかの API を実行したい場合は、この PAT を使用する。
-     */
-    private var _pat = ""
-
-    init {
-        scope.launch {
-            githubPreferences.patFlow.collect { newPat ->
-                _pat = newPat
-            }
-        }
-    }
-
-    override fun getPatStream(): Flow<String> {
-        return githubPreferences.patFlow
-    }
-
-    override fun updatePat(pat: String) {
-        scope.launch {
-            withContext(dispatcher) {
-                githubPreferences.updatePat(pat)
-            }
-        }
-    }
-
-    override fun getRetainPat(): Flow<Boolean> {
-        return githubPreferences.retainPatChecked
-    }
-
-    override fun updateRetainPat(checked: Boolean) {
-        scope.launch {
-            withContext(dispatcher) {
-                githubPreferences.updateRetainPat(checked)
-            }
-        }
-    }
 
     /**
      * サーバーからデータをロードして、ローカルに保存する。
