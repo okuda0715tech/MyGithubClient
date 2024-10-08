@@ -91,7 +91,6 @@ fun LoginContent(
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = {
-                // fixme アイコンをタップすると、チェックボックスとトークン文字列が初期値になる不具合がある。
                 if (patVisible) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_visibility_on_24),
