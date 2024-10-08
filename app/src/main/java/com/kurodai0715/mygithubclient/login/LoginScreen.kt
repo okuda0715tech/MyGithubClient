@@ -74,6 +74,8 @@ fun LoginContent(
 ) {
     // TODO パーソナルアクセストークンの取得方法の説明を軽く追加する。
     //  例えば、公式サイトの URL リンクだけでも OK。
+    //  ただし、パーソナルアクセストークンには、旧型のクラッシックタイプと新型のきめ細かいタイプがあるため、
+    //  どちらが必要なのか、あるいは両方必要なのかが確定してから情報を載せる。
 
     Column(modifier = Modifier.padding(12.dp)) {
         Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
