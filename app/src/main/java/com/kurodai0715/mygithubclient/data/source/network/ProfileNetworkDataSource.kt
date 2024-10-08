@@ -18,7 +18,6 @@ class ProfileNetworkDataSource @Inject constructor() : NetworkDataSource {
             UserApiResponse.Success(GithubApi.retrofitService.getProfile(auth = auth))
         } catch (e: HttpException) {
             // TODO エラーが返ってきた場合は、画面にメッセージを表示する等の対応を行う。
-            Log.d(TAG, "HttpException = $e")
             UserApiResponse.Error(e)
         }
     }

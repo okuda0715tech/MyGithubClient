@@ -1,8 +1,6 @@
 package com.kurodai0715.mygithubclient.data
 
 import android.util.Log
-import com.kurodai0715.mygithubclient.data.source.local.GithubPreferences
-import com.kurodai0715.mygithubclient.data.source.local.GithubPreferencesRepository
 import com.kurodai0715.mygithubclient.data.source.local.ProfileDao
 import com.kurodai0715.mygithubclient.data.source.network.NetworkDataSource
 import com.kurodai0715.mygithubclient.data.source.network.UserApiResponse
@@ -14,7 +12,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,7 +43,7 @@ class DefaultProfileRepository @Inject constructor(
                 // DB へ登録する。
                 localDataSource.upsert(remoteProfile.profile.toLocal())
             } else if (remoteProfile is UserApiResponse.Error) {
-                Log.v(TAG, "network error occurred when user api executed.")
+                Log.d(TAG, "HttpException = ${remoteProfile.httpException}")
             }
         }
     }
