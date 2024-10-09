@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TAG = "DefaultProfileRepository"
+private const val TAG = "DefaultProfileRepository"
 
 @Singleton
 class DefaultProfileRepository @Inject constructor(
@@ -30,20 +30,33 @@ class DefaultProfileRepository @Inject constructor(
      * サーバーからデータをロードして、ローカルに保存する。
      *
      * ローカルのデータは保存する前にクリアする。
+     *
+     * @return サーバーからのレスポンスコード
      */
-    override suspend fun loadProfile(pat: String) {
+    override suspend fun loadProfile(pat: String): Int {
         Log.v(TAG, "refresh is started.")
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val patHeader = "Bearer $pat"
-            val remoteProfile = networkDataSource.loadProfile(patHeader)
-            Log.d(TAG, "remoteProfile = $remoteProfile")
+            val userApiResponse = networkDataSource.loadProfile(patHeader)
+            Log.d(TAG, "remoteProfile = $userApiResponse")
 
-            if (remoteProfile is UserApiResponse.Success) {
-                // DB へ登録する。
-                localDataSource.upsert(remoteProfile.profile.toLocal())
-            } else if (remoteProfile is UserApiResponse.Error) {
-                Log.d(TAG, "HttpException = ${remoteProfile.httpException}")
+            when (userApiResponse) {
+                is UserApiResponse.Success -> {
+                    // DB へ登録する。
+                    localDataSource.upsert(userApiResponse.response.body()!!.toLocal())
+                    return@withContext userApiResponse.response.code()
+                }
+
+                is UserApiResponse.ContentsError -> {
+                    Log.d(TAG, "HttpException = ${userApiResponse.response}")
+                    return@withContext userApiResponse.response!!.code()
+                }
+
+                is UserApiResponse.NoResponseError -> {
+                    // todo
+                    return@withContext 999
+                }
             }
         }
     }

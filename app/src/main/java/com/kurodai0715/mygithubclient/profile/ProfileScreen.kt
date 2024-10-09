@@ -44,6 +44,7 @@ private fun ProfileContent(
     profile: Profile?,
     modifier: Modifier = Modifier
 ) {
+    // TODO ログアウト機能を実装する。ログアウト時には、ローカルのデータを基本的に全て削除する。
     Column(modifier = modifier) {
         Text(text = "id = " + profile?.id)
         Text(text = "login = " + profile?.login)

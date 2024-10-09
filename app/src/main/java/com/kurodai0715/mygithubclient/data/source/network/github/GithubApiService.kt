@@ -3,12 +3,12 @@ package com.kurodai0715.mygithubclient.data.source.network.github
 import com.kurodai0715.mygithubclient.data.source.network.NetworkProfile
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
-import retrofit2.http.POST
 
 private const val BASE_URL = "https://api.github.com"
 
@@ -31,7 +31,7 @@ interface GithubApiService {
         "X-GitHub-Api-Version: 2022-11-28"
     )
     @GET("user")
-    suspend fun getProfile(@Header("Authorization") auth: String): NetworkProfile
+    suspend fun getProfile(@Header("Authorization") auth: String): Response<NetworkProfile>
 
 }
 

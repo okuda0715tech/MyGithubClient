@@ -25,15 +25,12 @@ data class ProfileUiState(
     val profile: Profile? = null
 )
 
-const val TAG = "ProfileViewModel"
+private const val TAG = "ProfileViewModel"
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
-
-    // TODO ログイン画面とプロフィール画面で ViewModel を分けられるので、分ける。
-    //  これより下がプロフィール画面の処理なので、このあたりをわける。
 
     /**
      * 更新用

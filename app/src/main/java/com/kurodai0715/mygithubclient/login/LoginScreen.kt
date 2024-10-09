@@ -1,8 +1,10 @@
 package com.kurodai0715.mygithubclient.login
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
@@ -10,10 +12,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,39 +34,71 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kurodai0715.mygithubclient.R
+import com.kurodai0715.mygithubclient.data.source.network.HttpResponse
 
+private const val TAG = "LoginScreen"
 
 @Composable
 fun LoginScreen(
     goToNextScreen: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    val onLogin = { pat: String, patVisible: Boolean, retainPat: Boolean ->
-        if (retainPat) {
-            viewModel.savePatToPref(pat)
-        } else {
-            viewModel.savePatToPref("")
-            // Preference の状態が元々空文字だった場合は、状態が更新されないため、状態が通知されません。
-            // そのため、ユーザーが入力した PAT を uiState から明示的にクリアする必要があります。
-            viewModel.updatePat("")
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { paddingValues ->
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        val onLogin = { pat: String, patVisible: Boolean, retainPat: Boolean ->
+            if (retainPat) {
+                viewModel.savePatToPref(pat)
+            } else {
+                viewModel.savePatToPref("")
+                // Preference の状態が元々空文字だった場合は、状態が更新されないため、状態が通知されません。
+                // そのため、ユーザーが入力した PAT を uiState から明示的にクリアする必要があります。
+                viewModel.updatePat("")
+            }
+            viewModel.savePatVisibilityToPref(patVisible)
+            viewModel.saveRetainPatToPref(retainPat)
+            viewModel.loadProfile(pat)
         }
-        viewModel.savePatVisibilityToPref(patVisible)
-        viewModel.saveRetainPatToPref(retainPat)
-        viewModel.loadProfile(pat)
-        goToNextScreen()
-    }
 
-    LoginContent(
-        pat = uiState.pat,
-        onPatChanged = viewModel::updatePat,
-        patVisible = uiState.patVisible,
-        onClickPasswordVisibility = viewModel::updatePatVisibility,
-        retainPat = uiState.retainPat,
-        onRetainPatChanged = viewModel::updateRetainPat,
-        onLogin = onLogin
-    )
+        // TODO サーバーからレスポンスが返ってくるまでの間は、インジケーターを表示する。
+        LoginContent(
+            pat = uiState.pat,
+            onPatChanged = viewModel::updatePat,
+            patVisible = uiState.patVisible,
+            onClickPasswordVisibility = viewModel::updatePatVisibility,
+            retainPat = uiState.retainPat,
+            onRetainPatChanged = viewModel::updateRetainPat,
+            onLogin = onLogin,
+            modifier = Modifier.padding(paddingValues)
+        )
+
+        uiState.responseCode?.let { code ->
+            Log.d(TAG, "let block is started with responseCode = $code")
+
+            val message = stringResource(id = HttpResponse.getMessageResIdBy(code))
+
+            LaunchedEffect(code) {
+                Log.d(TAG, "response code = $code")
+                when (code) {
+                    HttpResponse.OK.code, HttpResponse.NOT_MODIFIED.code -> {
+                        Log.v(TAG, "success")
+                        goToNextScreen()
+                    }
+
+                    else -> {
+                        Log.v(TAG, "error")
+                        snackbarHostState.showSnackbar(message = message)
+                    }
+                }
+                viewModel.clearResponseCode()
+            }
+        }
+    }
 }
 
 @Composable
@@ -71,6 +110,7 @@ fun LoginContent(
     retainPat: Boolean,
     onRetainPatChanged: (Boolean) -> Unit,
     onLogin: (String, Boolean, Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     // TODO パーソナルアクセストークンの取得方法の説明を軽く追加する。
     //  例えば、公式サイトの URL リンクだけでも OK。

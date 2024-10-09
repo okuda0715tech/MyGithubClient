@@ -19,9 +19,10 @@ data class LoginUiState(
     val pat: String = "",
     val patVisible: Boolean = false,
     val retainPat: Boolean = false,
+    val responseCode: Int? = null,
 )
 
-const val TAG = "LoginViewModel"
+private const val TAG = "LoginViewModel"
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -47,6 +48,7 @@ class LoginViewModel @Inject constructor(
      * 画面表示用データをデータレイヤーから取得する.
      */
     private fun loadData() {
+        Log.v(TAG, "loadData is stated.")
         viewModelScope.launch {
             val githubPreferences = githubPrefRepo.githubPreferences.first()
             Log.d(TAG, "GithubPreferences = $githubPreferences")
@@ -57,6 +59,27 @@ class LoginViewModel @Inject constructor(
                     retainPat = githubPreferences.retainPat
                 )
             }
+        }
+
+        Log.v(TAG, "loadData is ended.")
+    }
+
+    private fun updateResponseCode(code: Int) {
+        Log.d(TAG, "response code = $code")
+        _uiState.update {
+            it.copy(
+                responseCode = code
+            )
+        }
+    }
+
+    /**
+     * API 実行結果のレスポンスコードをクリア.
+     */
+    fun clearResponseCode() {
+        _uiState.update {
+            Log.v(TAG, "response code is cleared.")
+            it.copy(responseCode = null)
         }
     }
 
@@ -125,11 +148,15 @@ class LoginViewModel @Inject constructor(
     }
 
     /**
+     * Github の user API をリクエストして、その結果を処理する.
+     *
      * サーバーからデータをロードして、ローカルに保存する。
+     * サーバーアクセスの結果を UI 状態に反映する。
      */
     fun loadProfile(pat: String = "") {
         viewModelScope.launch {
-            profileRepository.loadProfile(pat)
+            val code = profileRepository.loadProfile(pat)
+            updateResponseCode(code)
         }
     }
 
