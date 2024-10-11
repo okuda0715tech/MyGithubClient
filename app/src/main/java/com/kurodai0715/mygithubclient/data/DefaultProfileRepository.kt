@@ -43,6 +43,7 @@ class DefaultProfileRepository @Inject constructor(
 
             when (userApiResponse) {
                 is UserApiResponse.Success -> {
+                    Log.d(TAG, "user API response body = ${userApiResponse.response.body()}")
                     // DB へ登録する。
                     localDataSource.upsert(userApiResponse.response.body()!!.toLocal())
                     return@withContext userApiResponse.response.code()
