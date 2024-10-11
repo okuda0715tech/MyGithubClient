@@ -52,7 +52,11 @@ class LoginViewModel @Inject constructor(
         Log.v(TAG, "loadData is stated.")
         viewModelScope.launch {
             val githubPreferences = githubPrefRepo.githubPreferences.first()
-            Log.d(TAG, "GithubPreferences = $githubPreferences")
+            Log.d(
+                TAG,
+                "patVisibility = ${githubPreferences.patVisibility}," +
+                        " retainPat = ${githubPreferences.retainPat}"
+            )
             _uiState.update {
                 it.copy(
                     pat = githubPreferences.pat,

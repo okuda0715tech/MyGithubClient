@@ -41,7 +41,6 @@ class GithubPreferencesRepository @Inject constructor(
     suspend fun updatePat(pat: String) {
         withContext(dispatcher) {
             context.githubPrefDataStore.edit { githubPref ->
-                Log.d(TAG, "save githubPref[PAT] (${githubPref[PAT]})}")
                 githubPref[PAT] = pat
             }
         }
@@ -67,13 +66,12 @@ class GithubPreferencesRepository @Inject constructor(
 
     val githubPreferences: Flow<GithubPreferences> = context.githubPrefDataStore.data
         .map { githubPref ->
-            Log.d(TAG, "githubPref[PAT] = ${githubPref[PAT]}")
             val pat = githubPref[PAT] ?: ""
             val patVisibility = githubPref[PAT_VISIBILITY] ?: false
             val retainPat = githubPref[RETAIN_PAT] ?: false
             val githubPreferences =
                 GithubPreferences(pat = pat, patVisibility = patVisibility, retainPat = retainPat)
-            Log.d(TAG, "GithubPreferences = $githubPreferences")
+            Log.d(TAG, "patVisibility = $patVisibility, retainPat = $retainPat")
             githubPreferences
         }
 }
