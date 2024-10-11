@@ -2,6 +2,7 @@ package com.kurodai0715.mygithubclient.login
 
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -35,6 +35,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kurodai0715.mygithubclient.R
 import com.kurodai0715.mygithubclient.data.source.network.HttpResponse
+import com.kurodai0715.mygithubclient.util.CircularLoading
+import com.kurodai0715.mygithubclient.util.DebouncedButton
 
 private const val TAG = "LoginScreen"
 
@@ -65,7 +67,6 @@ fun LoginScreen(
             viewModel.loadProfile(pat)
         }
 
-        // TODO サーバーからレスポンスが返ってくるまでの間は、インジケーターを表示する。
         LoginContent(
             pat = uiState.pat,
             onPatChanged = viewModel::updatePat,
@@ -74,6 +75,7 @@ fun LoginScreen(
             retainPat = uiState.retainPat,
             onRetainPatChanged = viewModel::updateRetainPat,
             onLogin = onLogin,
+            loading = uiState.loading,
             modifier = Modifier.padding(paddingValues)
         )
 
@@ -110,6 +112,7 @@ fun LoginContent(
     retainPat: Boolean,
     onRetainPatChanged: (Boolean) -> Unit,
     onLogin: (String, Boolean, Boolean) -> Unit,
+    loading: Boolean,
     modifier: Modifier = Modifier,
 ) {
     // TODO パーソナルアクセストークンの取得方法の説明を軽く追加する。
@@ -117,69 +120,77 @@ fun LoginContent(
     //  ただし、パーソナルアクセストークンには、旧型のクラッシックタイプと新型のきめ細かいタイプがあるため、
     //  どちらが必要なのか、あるいは両方必要なのかが確定してから情報を載せる。
 
-    Column(modifier = Modifier.padding(12.dp)) {
-        Text(text = stringResource(id = R.string.login_prompt), modifier = Modifier.padding(8.dp))
-        TextField(
-            value = pat,
-            onValueChange = onPatChanged,
-            label = { Text(text = "Personal Access Token") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = if (patVisible) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            leadingIcon = {
-                if (patVisible) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_visibility_on_24),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .clickable { onClickPasswordVisibility(false) }
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_visibility_off_24),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .clickable { onClickPasswordVisibility(true) }
-                    )
-                }
-            }
-        )
-
-        Row(
-            Modifier.toggleable(
-                value = retainPat,
-                role = Role.Checkbox,
-                onValueChange = onRetainPatChanged
-            )
-        ) {
-            Checkbox(
-                checked = retainPat,
-                onCheckedChange = null,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.CenterVertically)
-            )
-
+    Box(modifier = modifier) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Text(
-                text = stringResource(id = R.string.save_token_checkbox_label),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.CenterVertically)
+                text = stringResource(id = R.string.login_prompt),
+                modifier = Modifier.padding(8.dp)
             )
+            TextField(
+                value = pat,
+                onValueChange = onPatChanged,
+                label = { Text(text = "Personal Access Token") },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = if (patVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                leadingIcon = {
+                    if (patVisible) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_visibility_on_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .clickable { onClickPasswordVisibility(false) }
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_visibility_off_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .clickable { onClickPasswordVisibility(true) }
+                        )
+                    }
+                }
+            )
+
+            Row(
+                Modifier.toggleable(
+                    value = retainPat,
+                    role = Role.Checkbox,
+                    onValueChange = onRetainPatChanged
+                )
+            ) {
+                Checkbox(
+                    checked = retainPat,
+                    onCheckedChange = null,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.CenterVertically)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.save_token_checkbox_label),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+            DebouncedButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                    onLogin(pat, patVisible, retainPat)
+                }
+            ) {
+                Text(text = stringResource(id = R.string.login_button_label))
+            }
         }
-        Button(
-            onClick = {
-                onLogin(pat, patVisible, retainPat)
-            },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = stringResource(id = R.string.login_button_label))
+        if (loading) {
+            CircularLoading()
         }
     }
 }

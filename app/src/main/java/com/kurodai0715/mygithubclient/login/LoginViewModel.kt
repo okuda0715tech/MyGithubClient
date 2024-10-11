@@ -20,6 +20,7 @@ data class LoginUiState(
     val patVisible: Boolean = false,
     val retainPat: Boolean = false,
     val responseCode: Int? = null,
+    val loading: Boolean = false,
 )
 
 private const val TAG = "LoginViewModel"
@@ -147,6 +148,12 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    private fun updateLoading(loading: Boolean) {
+        _uiState.update {
+            it.copy(loading = loading)
+        }
+    }
+
     /**
      * Github の user API をリクエストして、その結果を処理する.
      *
@@ -154,9 +161,11 @@ class LoginViewModel @Inject constructor(
      * サーバーアクセスの結果を UI 状態に反映する。
      */
     fun loadProfile(pat: String = "") {
+        updateLoading(true)
         viewModelScope.launch {
             val code = profileRepository.loadProfile(pat)
             updateResponseCode(code)
+            updateLoading(false)
         }
     }
 
