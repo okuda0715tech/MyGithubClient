@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.converter)
 
+    // Glide
+    implementation(libs.glide.compose)
+
     // Architecture Components
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
