@@ -7,11 +7,15 @@ import com.kurodai0715.mygithubclient.data.source.network.NetworkProfile
 fun NetworkProfile.toLocal() = LocalProfile(
     id = id,
     login = login,
-    email = email
+    avatarUrl = avatarUrl,
+    name = name,
+    email = email,
 )
 
 fun LocalProfile.toExternal() = Profile(
     id = id,
     login = login,
-    email = email
+    avatarUrl = avatarUrl,
+    name = name,
+    email = email,
 )
