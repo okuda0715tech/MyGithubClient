@@ -8,7 +8,11 @@
 
     <string name="profile_not_found">プロフィールが見つかりません。</string>
     <string name="loading_profile_error">プロフィールのローディングでエラーが発生しました。</string>
-    
+
+    <!-- プロフィール画面 -->
+    <string name="company_icon_description">会社名</string>
+    <string name="location_icon_description">活動拠点</string>
+
     <!-- HTTP レスポンス -->
     <string name="response_normal">正常終了しました。</string>
     <string name="response_unauthorized">認証に失敗しました。</string>

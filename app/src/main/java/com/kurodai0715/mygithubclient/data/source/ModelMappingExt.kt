@@ -9,7 +9,10 @@ fun NetworkProfile.toLocal() = LocalProfile(
     login = login,
     avatarUrl = avatarUrl,
     name = name,
+    company = company,
+    location = location,
     email = email,
+    bio = bio,
 )
 
 fun LocalProfile.toExternal() = Profile(
@@ -17,5 +20,8 @@ fun LocalProfile.toExternal() = Profile(
     login = login,
     avatarUrl = avatarUrl,
     name = name,
+    company = company,
+    location = location,
     email = email,
+    bio = bio,
 )
