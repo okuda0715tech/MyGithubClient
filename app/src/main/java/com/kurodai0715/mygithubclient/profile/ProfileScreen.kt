@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -73,11 +75,15 @@ private fun ProfileContent(
     modifier: Modifier = Modifier
 ) {
     // TODO ログアウト機能を実装する。ログアウト時には、ローカルのデータを基本的に全て削除する。
-    Column(modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainer)) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(12.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -122,8 +128,14 @@ private fun ProfileContent(
                 Text(text = profile?.location ?: "")
             }
         }
+        HorizontalDivider()
         Spacer(modifier = Modifier.height(16.dp))
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(12.dp)
+        ) {
             Row {
                 Icon(
                     painter = painterResource(id = R.drawable.outline_location_on_24),
@@ -135,6 +147,7 @@ private fun ProfileContent(
                 Text(text = "人気")
             }
         }
+        HorizontalDivider()
     }
 }
 
