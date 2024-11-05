@@ -105,7 +105,11 @@ private fun ProfileContent(
                     modifier = Modifier.padding(start = 12.dp)
                 ) {
                     Text(text = profile?.name ?: "", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    Text(text = profile?.login ?: "", fontSize = 14.sp)
+                    Text(
+                        text = profile?.login ?: "",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 }
             }
             Text(text = profile?.bio ?: "")
@@ -125,7 +129,10 @@ private fun ProfileContent(
                     ),
                     modifier = Modifier.size(18.dp),
                 )
-                Text(text = profile?.location ?: "")
+                Text(
+                    text = profile?.location ?: "",
+                    color = MaterialTheme.colorScheme.outline
+                )
             }
         }
         HorizontalDivider()
