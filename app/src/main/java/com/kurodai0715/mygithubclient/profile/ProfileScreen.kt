@@ -120,6 +120,7 @@ private fun ProfileContent(
                         id = R.string.company_icon_description
                     ),
                     modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.outline,
                 )
                 Text(text = profile?.company ?: "")
                 Icon(
@@ -128,10 +129,11 @@ private fun ProfileContent(
                         id = R.string.location_icon_description
                     ),
                     modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.outline,
                 )
                 Text(
                     text = profile?.location ?: "",
-                    color = MaterialTheme.colorScheme.outline
+                    color = MaterialTheme.colorScheme.outline,
                 )
             }
         }
