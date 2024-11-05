@@ -3,9 +3,11 @@ package com.kurodai0715.mygithubclient.profile
 import android.inputmethodservice.Keyboard
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -59,7 +62,9 @@ fun ProfileScreen(
 
         ProfileContent(
             profile = uiState.profile,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
         )
     }
 
@@ -72,52 +77,49 @@ private fun ProfileContent(
     modifier: Modifier = Modifier
 ) {
     // TODO ログアウト機能を実装する。ログアウト時には、ローカルのデータを基本的に全て削除する。
-    Column(modifier = modifier.padding(horizontal = 12.dp)) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(12.dp)
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            GlideImage(
-                model = profile?.avatarUrl,
-                contentDescription = "user icon",
-                loading = placeholder(ColorPainter(Color.LightGray)),
-                contentScale = ContentScale.Crop,
-                modifier = modifier
-                    .size(60.dp)
-                    .clip(CircleShape),
-                requestBuilderTransform = {
-                    it.skipMemoryCache(true) // メモリキャッシュをスキップ
-                        .diskCacheStrategy(DiskCacheStrategy.NONE) // ディスクキャッシュを無効化
+    Box(modifier = modifier) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                GlideImage(
+                    model = profile?.avatarUrl,
+                    contentDescription = "user icon",
+                    loading = placeholder(ColorPainter(Color.LightGray)),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(CircleShape),
+                    requestBuilderTransform = {
+                        it.skipMemoryCache(true) // メモリキャッシュをスキップ
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ディスクキャッシュを無効化
+                    }
+                )
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(start = 12.dp)
+                ) {
+                    Text(text = profile?.name ?: "", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text(text = profile?.login ?: "", fontSize = 14.sp)
                 }
-            )
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(start = 12.dp)
-            ) {
-                Text(text = profile?.name ?: "", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                Text(text = profile?.login ?: "", fontSize = 14.sp)
             }
-        }
-        Text(text = profile?.bio ?: "")
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_business_24),
-                contentDescription = stringResource(
-                    id = R.string.company_icon_description
-                ),
-                modifier = Modifier.size(18.dp),
-            )
-            Text(text = profile?.company ?: "")
-            Icon(
-                painter = painterResource(id = R.drawable.outline_location_on_24),
-                contentDescription = stringResource(
-                    id = R.string.location_icon_description
-                ),
-                modifier = Modifier.size(18.dp),
-            )
-            Text(text = profile?.location ?: "")
+            Text(text = profile?.bio ?: "")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_business_24),
+                    contentDescription = stringResource(
+                        id = R.string.company_icon_description
+                    ),
+                    modifier = Modifier.size(18.dp),
+                )
+                Text(text = profile?.company ?: "")
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_location_on_24),
+                    contentDescription = stringResource(
+                        id = R.string.location_icon_description
+                    ),
+                    modifier = Modifier.size(18.dp),
+                )
+                Text(text = profile?.location ?: "")
+            }
         }
     }
 }
