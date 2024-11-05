@@ -198,7 +198,7 @@ fun LoginContent(
     }
 }
 
-@Preview
+@Preview(apiLevel = 34)
 @Composable
 private fun PreviewLoginScreen() {
     LoginScreen(goToNextScreen = { })
