@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kurodai0715.mygithubclient.R
 import com.kurodai0715.mygithubclient.data.source.network.HttpResponse
+import com.kurodai0715.mygithubclient.ui.theme.MyGithubClientTheme
 import com.kurodai0715.mygithubclient.util.CircularLoading
 import com.kurodai0715.mygithubclient.util.DebouncedButton
 
@@ -201,5 +202,7 @@ fun LoginContent(
 @Preview(apiLevel = 34)
 @Composable
 private fun PreviewLoginScreen() {
-    LoginScreen(goToNextScreen = { })
+    MyGithubClientTheme {
+        LoginScreen(goToNextScreen = { })
+    }
 }

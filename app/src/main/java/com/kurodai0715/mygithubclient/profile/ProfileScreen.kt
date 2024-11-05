@@ -1,14 +1,11 @@
 package com.kurodai0715.mygithubclient.profile
 
-import android.inputmethodservice.Keyboard
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,7 +18,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,7 +26,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +38,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.kurodai0715.mygithubclient.ui.theme.MyGithubClientTheme
 import com.kurodai0715.mygithubclient.R
 import com.kurodai0715.mygithubclient.data.Profile
 
@@ -77,8 +73,13 @@ private fun ProfileContent(
     modifier: Modifier = Modifier
 ) {
     // TODO ログアウト機能を実装する。ログアウト時には、ローカルのデータを基本的に全て削除する。
-    Box(modifier = modifier) {
-        Column(modifier = Modifier.padding(12.dp)) {
+    Column(modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainer)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(12.dp)
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 GlideImage(
                     model = profile?.avatarUrl,
@@ -121,22 +122,37 @@ private fun ProfileContent(
                 Text(text = profile?.location ?: "")
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        Column {
+            Row {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_location_on_24),
+                    contentDescription = stringResource(
+                        id = R.string.location_icon_description
+                    ),
+                    modifier = Modifier.size(18.dp),
+                )
+                Text(text = "人気")
+            }
+        }
     }
 }
 
 @Preview(apiLevel = 34)
 @Composable
 private fun ScreenPreview() {
-    ProfileContent(
-        profile = Profile(
-            id = 1234567,
-            login = "Ichiro1234",
-            avatarUrl = "",
-            name = "Suzuki Ichiro",
-            company = "Company Name",
-            location = "Location",
-            email = "abcd@gmail.com",
-            bio = "Android Engineer"
-        ),
-    )
+    MyGithubClientTheme {
+        ProfileContent(
+            profile = Profile(
+                id = 1234567,
+                login = "Ichiro1234",
+                avatarUrl = "",
+                name = "Suzuki Ichiro",
+                company = "Company Name",
+                location = "Location",
+                email = "abcd@gmail.com",
+                bio = "Android Engineer"
+            ),
+        )
+    }
 }
