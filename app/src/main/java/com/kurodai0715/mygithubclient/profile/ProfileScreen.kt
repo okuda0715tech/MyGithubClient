@@ -85,7 +85,8 @@ private fun ProfileContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(12.dp)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 GlideImage(
@@ -105,15 +106,24 @@ private fun ProfileContent(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.padding(start = 12.dp)
                 ) {
-                    Text(text = profile?.name ?: "", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text(
+                        text = profile?.name ?: "",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
                     Text(
                         text = profile?.login ?: "",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.outline
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.outline,
+                        fontWeight = FontWeight.Normal,
                     )
                 }
             }
-            Text(text = profile?.bio ?: "")
+            Text(
+                text = profile?.bio ?: "",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Normal,
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -126,7 +136,11 @@ private fun ProfileContent(
                     modifier = Modifier.size(18.dp),
                     tint = MaterialTheme.colorScheme.outline,
                 )
-                Text(text = profile?.company ?: "")
+                Text(
+                    text = profile?.company ?: "",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Normal,
+                )
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.outline_location_on_24),
@@ -139,6 +153,8 @@ private fun ProfileContent(
                 Text(
                     text = profile?.location ?: "",
                     color = MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Normal,
                 )
             }
         }
