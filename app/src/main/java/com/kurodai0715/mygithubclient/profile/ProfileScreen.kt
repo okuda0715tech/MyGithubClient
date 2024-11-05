@@ -1,5 +1,6 @@
 package com.kurodai0715.mygithubclient.profile
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.kurodai0715.mygithubclient.ui.theme.MyGithubClientTheme
 import com.kurodai0715.mygithubclient.R
 import com.kurodai0715.mygithubclient.data.Profile
+import com.kurodai0715.mygithubclient.ui.component.SurfaceButton
 
 @Composable
 fun ProfileScreen(
@@ -75,6 +77,9 @@ private fun ProfileContent(
     profile: Profile?,
     modifier: Modifier = Modifier
 ) {
+    val appColorScheme = MaterialTheme.colorScheme
+    val iconSize = 16.dp
+
     // TODO ログアウト機能を実装する。ログアウト時には、ローカルのデータを基本的に全て削除する。
     Column(
         modifier = modifier
@@ -119,6 +124,42 @@ private fun ProfileContent(
                     )
                 }
             }
+            SurfaceButton(
+                onClick = { /*TODO*/ },
+                shape = MaterialTheme.shapes.extraSmall,
+                border = BorderStroke(width = 0.1.dp, color = appColorScheme.outlineVariant),
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_emoji_emotions_24),
+                        contentDescription = stringResource(
+                            id = R.string.company_icon_description
+                        ),
+                        modifier = Modifier.size(iconSize),
+                        tint = MaterialTheme.colorScheme.outline,
+                    )
+                    Text(
+                        text = "状態を設定する",
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_edit_24),
+                        contentDescription = stringResource(
+                            id = R.string.company_icon_description
+                        ),
+                        modifier = Modifier.size(iconSize),
+                        tint = MaterialTheme.colorScheme.outline,
+                    )
+                }
+            }
             Text(
                 text = profile?.bio ?: "",
                 style = MaterialTheme.typography.labelLarge,
@@ -133,7 +174,7 @@ private fun ProfileContent(
                     contentDescription = stringResource(
                         id = R.string.company_icon_description
                     ),
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(iconSize),
                     tint = MaterialTheme.colorScheme.outline,
                 )
                 Text(
@@ -147,7 +188,7 @@ private fun ProfileContent(
                     contentDescription = stringResource(
                         id = R.string.location_icon_description
                     ),
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(iconSize),
                     tint = MaterialTheme.colorScheme.outline,
                 )
                 Text(
@@ -172,7 +213,7 @@ private fun ProfileContent(
                     contentDescription = stringResource(
                         id = R.string.location_icon_description
                     ),
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(16.dp),
                 )
                 Text(text = "人気")
             }
