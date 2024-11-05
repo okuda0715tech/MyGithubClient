@@ -140,20 +140,20 @@ private fun ProfileContent(
                     Icon(
                         painter = painterResource(id = R.drawable.outline_emoji_emotions_24),
                         contentDescription = stringResource(
-                            id = R.string.company_icon_description
+                            id = R.string.your_state_icon_description
                         ),
                         modifier = Modifier.size(iconSize),
                         tint = MaterialTheme.colorScheme.outline,
                     )
                     Text(
-                        text = "状態を設定する",
+                        text = stringResource(id = R.string.set_state),
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.weight(1f),
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.outline_edit_24),
                         contentDescription = stringResource(
-                            id = R.string.company_icon_description
+                            id = R.string.editable_icon_description
                         ),
                         modifier = Modifier.size(iconSize),
                         tint = MaterialTheme.colorScheme.outline,

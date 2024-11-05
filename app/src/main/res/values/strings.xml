@@ -10,6 +10,9 @@
     <string name="loading_profile_error">プロフィールのローディングでエラーが発生しました。</string>
 
     <!-- プロフィール画面 -->
+    <string name="set_state">状態を設定する</string>
+    <string name="your_state_icon_description">あたなの状態を示すアイコン</string>
+    <string name="editable_icon_description">編集可能を示すアイコン</string>
     <string name="company_icon_description">会社名</string>
     <string name="location_icon_description">活動拠点</string>
 
