@@ -233,15 +233,23 @@ private fun ProfileContent(
                 .background(appColorScheme.surface)
                 .padding(12.dp)
         ) {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.outline_location_on_24),
+                    painter = painterResource(id = R.drawable.round_star_outline_24),
                     contentDescription = stringResource(
-                        id = R.string.location_icon_description
+                        id = R.string.popular_icon_description
                     ),
                     modifier = Modifier.size(16.dp),
+                    tint = appColorScheme.onSurfaceVariant,
                 )
-                Text(text = "人気")
+                Text(
+                    text = stringResource(id = R.string.popular),
+                    style = appTypography.labelLarge,
+                    fontWeight = FontWeight.Medium,
+                )
             }
         }
         HorizontalDivider()

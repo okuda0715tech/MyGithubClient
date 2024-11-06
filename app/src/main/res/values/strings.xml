@@ -17,6 +17,8 @@
     <string name="location_icon_description">活動拠点</string>
     <string name="following_suffix">人をフォロー中</string>
     <string name="following_icon_description">フォロー中の人数</string>
+    <string name="popular_icon_description">あなたのリポジトリで人気があるもの</string>
+    <string name="popular">人気</string>
 
     <!-- HTTP レスポンス -->
     <string name="response_normal">正常終了しました。</string>
