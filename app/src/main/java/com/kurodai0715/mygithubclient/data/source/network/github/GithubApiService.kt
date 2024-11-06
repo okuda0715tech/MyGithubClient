@@ -26,6 +26,9 @@ private val retrofit = Retrofit.Builder()
 
 interface GithubApiService {
 
+    /**
+     * ドキュメント URL : https://docs.github.com/ja/rest/users/users?apiVersion=2022-11-28
+     */
     @Headers(
         "Accept: application/vnd.github+json",
         "X-GitHub-Api-Version: 2022-11-28"
