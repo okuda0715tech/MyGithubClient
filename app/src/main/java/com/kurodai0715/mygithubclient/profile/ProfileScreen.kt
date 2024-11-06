@@ -78,18 +78,20 @@ private fun ProfileContent(
     modifier: Modifier = Modifier
 ) {
     val appColorScheme = MaterialTheme.colorScheme
+    val appTypography = MaterialTheme.typography
+    val appShapes = MaterialTheme.shapes
     val iconSize = 16.dp
 
     // TODO ログアウト機能を実装する。ログアウト時には、ローカルのデータを基本的に全て削除する。
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .background(appColorScheme.surfaceContainerHigh)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(appColorScheme.surface)
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -113,24 +115,24 @@ private fun ProfileContent(
                 ) {
                     Text(
                         text = profile?.name ?: "",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = appTypography.titleLarge,
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
                         text = profile?.login ?: "",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.outline,
+                        style = appTypography.labelLarge,
+                        color = appColorScheme.outline,
                         fontWeight = FontWeight.Normal,
                     )
                 }
             }
             SurfaceButton(
                 onClick = { /*TODO*/ },
-                shape = MaterialTheme.shapes.extraSmall,
+                shape = appShapes.extraSmall,
                 border = BorderStroke(width = 0.1.dp, color = appColorScheme.outlineVariant),
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = appColorScheme.surfaceContainer,
+                contentColor = appColorScheme.onSurfaceVariant,
             ) {
                 Row(
                     modifier = Modifier.padding(8.dp),
@@ -143,11 +145,11 @@ private fun ProfileContent(
                             id = R.string.your_state_icon_description
                         ),
                         modifier = Modifier.size(iconSize),
-                        tint = MaterialTheme.colorScheme.outline,
+                        tint = appColorScheme.outline,
                     )
                     Text(
                         text = stringResource(id = R.string.set_state),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = appTypography.labelLarge,
                         modifier = Modifier.weight(1f),
                     )
                     Icon(
@@ -156,13 +158,13 @@ private fun ProfileContent(
                             id = R.string.editable_icon_description
                         ),
                         modifier = Modifier.size(iconSize),
-                        tint = MaterialTheme.colorScheme.outline,
+                        tint = appColorScheme.outline,
                     )
                 }
             }
             Text(
                 text = profile?.bio ?: "",
-                style = MaterialTheme.typography.labelLarge,
+                style = appTypography.labelLarge,
                 fontWeight = FontWeight.Normal,
             )
             Row(
@@ -175,11 +177,11 @@ private fun ProfileContent(
                         id = R.string.company_icon_description
                     ),
                     modifier = Modifier.size(iconSize),
-                    tint = MaterialTheme.colorScheme.outline,
+                    tint = appColorScheme.outline,
                 )
                 Text(
                     text = profile?.company ?: "",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = appTypography.labelLarge,
                     fontWeight = FontWeight.Normal,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -189,12 +191,12 @@ private fun ProfileContent(
                         id = R.string.location_icon_description
                     ),
                     modifier = Modifier.size(iconSize),
-                    tint = MaterialTheme.colorScheme.outline,
+                    tint = appColorScheme.outline,
                 )
                 Text(
                     text = profile?.location ?: "",
-                    color = MaterialTheme.colorScheme.outline,
-                    style = MaterialTheme.typography.labelMedium,
+                    color = appColorScheme.outline,
+                    style = appTypography.labelMedium,
                     fontWeight = FontWeight.Normal,
                 )
             }
@@ -204,7 +206,7 @@ private fun ProfileContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(appColorScheme.surface)
                 .padding(12.dp)
         ) {
             Row {
