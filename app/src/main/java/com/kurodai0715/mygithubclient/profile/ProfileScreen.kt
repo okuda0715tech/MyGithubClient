@@ -291,7 +291,7 @@ private fun ProfileContent(
                 .fillMaxWidth()
                 .background(appColorScheme.surface)
                 .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -312,7 +312,51 @@ private fun ProfileContent(
                 Text(
                     text = stringResource(id = R.string.repository),
                     style = appTypography.labelLarge,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Normal,
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_business_24),
+                    contentDescription = stringResource(
+                        id = R.string.organization_icon_description
+                    ),
+                    modifier = Modifier
+                        .clip(appShapes.extraSmall)
+                        .background(colorResource(id = R.color.orange))
+                        .padding(6.dp)
+                        .size(16.dp),
+                    tint = colorResource(id = R.color.white),
+                )
+                Text(
+                    text = stringResource(id = R.string.organization),
+                    style = appTypography.labelLarge,
+                    fontWeight = FontWeight.Normal,
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_star_outline_24),
+                    contentDescription = stringResource(
+                        id = R.string.starred_icon_description
+                    ),
+                    modifier = Modifier
+                        .clip(appShapes.extraSmall)
+                        .background(colorResource(id = R.color.yellow))
+                        .padding(6.dp)
+                        .size(16.dp),
+                    tint = colorResource(id = R.color.white),
+                )
+                Text(
+                    text = stringResource(id = R.string.starred),
+                    style = appTypography.labelLarge,
+                    fontWeight = FontWeight.Normal,
                 )
             }
         }
