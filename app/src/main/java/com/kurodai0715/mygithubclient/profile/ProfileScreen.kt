@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
@@ -35,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -261,7 +263,8 @@ private fun ProfileContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appColorScheme.surface)
-                .padding(12.dp)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -277,6 +280,37 @@ private fun ProfileContent(
                 )
                 Text(
                     text = stringResource(id = R.string.popular),
+                    style = appTypography.labelLarge,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+        }
+        HorizontalDivider()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appColorScheme.surface)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_inbox_24),
+                    contentDescription = stringResource(
+                        id = R.string.popular_icon_description
+                    ),
+                    modifier = Modifier
+                        .clip(appShapes.extraSmall)
+                        .background(colorResource(id = R.color.gray))
+                        .padding(6.dp)
+                        .size(16.dp),
+                    tint = colorResource(id = R.color.white),
+                )
+                Text(
+                    text = stringResource(id = R.string.repository),
                     style = appTypography.labelLarge,
                     fontWeight = FontWeight.Medium,
                 )

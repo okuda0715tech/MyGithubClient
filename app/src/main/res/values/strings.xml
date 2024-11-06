@@ -21,6 +21,12 @@
     <string name="following_icon_description">フォロー中の人数</string>
     <string name="popular_icon_description">あなたのリポジトリで人気があるもの</string>
     <string name="popular">人気</string>
+    <string name="repository_icon_description">リポジトリのアイコン</string>
+    <string name="repository">リポジトリ</string>
+    <string name="organization_icon_description">組織のアイコン</string>
+    <string name="organization">Organization</string>
+    <string name="starred_icon_description">スター済みのアイコン</string>
+    <string name="starred">Star済み</string>
 
     <!-- HTTP レスポンス -->
     <string name="response_normal">正常終了しました。</string>
