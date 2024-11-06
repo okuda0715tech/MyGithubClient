@@ -200,6 +200,30 @@ private fun ProfileContent(
                     fontWeight = FontWeight.Normal,
                 )
             }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_people_outline_24),
+                    contentDescription = stringResource(
+                        id = R.string.company_icon_description
+                    ),
+                    modifier = Modifier.size(iconSize),
+                    tint = appColorScheme.outline,
+                )
+                Text(
+                    text = profile?.following.toString(),
+                    style = appTypography.labelLarge,
+                    fontWeight = FontWeight.Medium,
+                )
+                Text(
+                    text = stringResource(id = R.string.following_suffix),
+                    style = appTypography.labelLarge,
+                    fontWeight = FontWeight.Normal,
+                    color = appColorScheme.outline,
+                )
+            }
         }
         HorizontalDivider()
         Spacer(modifier = Modifier.height(16.dp))
@@ -237,7 +261,8 @@ private fun ScreenPreview() {
                 company = "Company Name",
                 location = "Location",
                 email = "abcd@gmail.com",
-                bio = "Android Engineer"
+                bio = "Android Engineer",
+                following = 100,
             ),
         )
     }

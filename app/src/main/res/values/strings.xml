@@ -15,6 +15,7 @@
     <string name="editable_icon_description">編集可能を示すアイコン</string>
     <string name="company_icon_description">会社名</string>
     <string name="location_icon_description">活動拠点</string>
+    <string name="following_suffix">人をフォロー中</string>
 
     <!-- HTTP レスポンス -->
     <string name="response_normal">正常終了しました。</string>

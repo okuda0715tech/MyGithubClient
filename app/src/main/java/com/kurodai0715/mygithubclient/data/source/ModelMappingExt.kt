@@ -13,6 +13,7 @@ fun NetworkProfile.toLocal() = LocalProfile(
     location = location,
     email = email,
     bio = bio,
+    following = following,
 )
 
 fun LocalProfile.toExternal() = Profile(
@@ -24,4 +25,5 @@ fun LocalProfile.toExternal() = Profile(
     location = location,
     email = email,
     bio = bio,
+    following = following,
 )

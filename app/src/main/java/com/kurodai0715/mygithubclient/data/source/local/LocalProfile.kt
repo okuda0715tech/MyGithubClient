@@ -15,4 +15,5 @@ data class LocalProfile(
     val location: String?,
     val email: String?,
     val bio: String?,
+    val following: Int,
 )
