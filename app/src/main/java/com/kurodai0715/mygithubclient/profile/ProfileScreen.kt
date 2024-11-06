@@ -207,7 +207,7 @@ private fun ProfileContent(
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_people_outline_24),
                     contentDescription = stringResource(
-                        id = R.string.company_icon_description
+                        id = R.string.following_icon_description
                     ),
                     modifier = Modifier.size(iconSize),
                     tint = appColorScheme.outline,
