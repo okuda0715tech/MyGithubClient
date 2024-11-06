@@ -132,7 +132,7 @@ private fun ProfileContent(
                     loading = placeholder(ColorPainter(Color.LightGray)),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(60.dp)
+                        .size(56.dp)
                         .clip(CircleShape),
                     requestBuilderTransform = {
                         it.skipMemoryCache(true) // メモリキャッシュをスキップ
