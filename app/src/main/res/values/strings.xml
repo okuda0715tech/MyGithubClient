@@ -10,6 +10,8 @@
     <string name="loading_profile_error">プロフィールのローディングでエラーが発生しました。</string>
 
     <!-- プロフィール画面 -->
+    <string name="share_icon_description">共有アイコン</string>
+    <string name="setting_icon_description">設定アイコン</string>
     <string name="set_state">状態を設定する</string>
     <string name="your_state_icon_description">あたなの状態を示すアイコン</string>
     <string name="editable_icon_description">編集可能を示すアイコン</string>

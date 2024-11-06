@@ -14,6 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -47,6 +52,7 @@ import com.kurodai0715.mygithubclient.R
 import com.kurodai0715.mygithubclient.data.Profile
 import com.kurodai0715.mygithubclient.ui.component.SurfaceButton
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
@@ -55,7 +61,31 @@ fun ProfileScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            TopAppBar(title = {}, actions = {
+                Icon(
+                    Icons.Outlined.Share,
+                    contentDescription = stringResource(
+                        id = R.string.share_icon_description
+                    ),
+                    modifier = Modifier
+                        .size(48.dp)
+                        .padding(12.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Icon(
+                    Icons.Outlined.Settings,
+                    contentDescription = stringResource(
+                        id = R.string.setting_icon_description
+                    ),
+                    modifier = Modifier
+                        .size(48.dp)
+                        .padding(12.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            })
+        }
     ) { paddingValues ->
 
 
