@@ -9,6 +9,7 @@ sealed class UserApiResponse {
     data class NoResponseError(val error: Exception): UserApiResponse()
 }
 
+// TODO クラス名を API のエンドポイント名にあわせて NetworkUser に変更したい。
 data class NetworkProfile(
     val login: String,
     val id: Int,
