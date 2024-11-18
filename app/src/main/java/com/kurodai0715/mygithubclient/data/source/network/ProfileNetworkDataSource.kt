@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 private const val TAG = "ProfileNetworkDataSource"
 
+// TODO クラス名を UserNetworkDataSource に変更したい。(エンドポイントが user で始まる API をこのクラスにまとめる予定)
 class ProfileNetworkDataSource @Inject constructor() : NetworkDataSource {
 
     private val accessMutex = Mutex()
