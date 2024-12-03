@@ -22,7 +22,7 @@ private const val TAG = "DefaultProfileRepository"
 class DefaultProfileRepository @Inject constructor(
     private val networkDataSource: NetworkDataSource,
     private val localDataSource: ProfileDao,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope,
 ) : ProfileRepository {
 
@@ -34,9 +34,9 @@ class DefaultProfileRepository @Inject constructor(
      * @return サーバーからのレスポンスコード
      */
     override suspend fun loadProfile(pat: String): Int {
-        Log.v(TAG, "refresh is started.")
+        Log.v(TAG, "loadProfile is started.")
 
-        return withContext(dispatcher) {
+        return withContext(ioDispatcher) {
             val patHeader = "Bearer $pat"
             val userApiResponse = networkDataSource.loadProfile(patHeader)
             Log.d(TAG, "remoteProfile = $userApiResponse")
