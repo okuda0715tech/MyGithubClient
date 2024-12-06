@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
 // TODO Hilt で依存関係の注入ができないか検討する。
 val Context.githubPrefDataStore: DataStore<Preferences> by preferencesDataStore(name = "github_preferences")
@@ -33,6 +34,7 @@ private const val TAG = "GithubPreferences"
 
 data class GithubPreferences(val pat: String, val patVisibility: Boolean, val retainPat: Boolean)
 
+@Singleton
 class GithubPreferencesRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
@@ -62,6 +64,22 @@ class GithubPreferencesRepository @Inject constructor(
                 githubPref[RETAIN_PAT] = checked
             }
         }
+    }
+
+    /**
+     * キャッシュ用の PAT.
+     *
+     * 各種 API 呼び出し時に PAT が必要な場合は、これを使用する。
+     */
+    private var pat: String = ""
+
+
+    fun getPat(): String {
+        return pat
+    }
+
+    fun setPat(pat: String) {
+        this.pat = pat
     }
 
     val githubPreferences: Flow<GithubPreferences> = context.githubPrefDataStore.data

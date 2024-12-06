@@ -27,4 +27,17 @@ class ProfileNetworkDataSource @Inject constructor() : NetworkDataSource {
         }
     }
 
+    override suspend fun loadUserRepos(auth: String): UserReposApiResponse = accessMutex.withLock {
+        try {
+            val response = GithubApi.retrofitService.getUserRepos(auth = auth)
+            Log.d(TAG, "response = $response")
+            if (response.isSuccessful) {
+                UserReposApiResponse.Success(response)
+            } else {
+                UserReposApiResponse.ContentsError(response)
+            }
+        } catch (e: Exception) {
+            UserReposApiResponse.NoResponseError(e)
+        }
+    }
 }

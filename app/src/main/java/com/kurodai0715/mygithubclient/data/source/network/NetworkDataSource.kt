@@ -4,4 +4,5 @@ interface NetworkDataSource {
 
     suspend fun loadProfile(auth: String): UserApiResponse
 
+    suspend fun loadUserRepos(auth: String): UserReposApiResponse
 }

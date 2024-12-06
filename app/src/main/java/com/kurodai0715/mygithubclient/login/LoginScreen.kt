@@ -60,13 +60,15 @@ fun LoginScreen(
                 viewModel.savePatToPref(pat)
             } else {
                 viewModel.savePatToPref("")
-                // Preference の状態が元々空文字だった場合は、状態が更新されないため、状態が通知されません。
-                // そのため、ユーザーが入力した PAT を uiState から明示的にクリアする必要があります。
+                // プリファレンスの状態は監視していないため、プリファレンスが更新されても、 UI 状態が更新されません。
+                // そのため、ログイン画面に戻った際に、 PAT が画面上に残っています。
+                // 画面上の PAT の入力エリアをクリアするために uiState から明示的に状態をクリアする必要があります。
                 viewModel.updatePat("")
             }
+            viewModel.cachePatToRepo(pat)
             viewModel.savePatVisibilityToPref(patVisible)
             viewModel.saveRetainPatToPref(retainPat)
-            viewModel.loadProfile(pat)
+            viewModel.loadProfile()
         }
 
         LoginContent(

@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ProfileUiState(
@@ -52,6 +53,11 @@ class ProfileViewModel @Inject constructor(
                 it.copy(profile = localProfile)
             }
         }.launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            // user/repos API にアクセスする。
+            profileRepository.loadUserRepos()
+        }
     }
 
 }

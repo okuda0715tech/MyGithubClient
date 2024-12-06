@@ -4,8 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
 
-    suspend fun loadProfile(pat: String = ""): Int
+    suspend fun loadProfile(): Int
 
     fun fetchProfileStream(): Flow<Profile?>
 
+    suspend fun loadUserRepos(): Int
 }

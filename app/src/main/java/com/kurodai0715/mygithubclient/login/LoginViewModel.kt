@@ -105,6 +105,13 @@ class LoginViewModel @Inject constructor(
     }
 
     /**
+     * PAT をメモリ上にキャッシュする.
+     */
+    fun cachePatToRepo(pat: String) {
+        githubPrefRepo.setPat(pat)
+    }
+
+    /**
      * PAT の表示/非表示状態を更新する.
      *
      * プリファレンスを更新する。画面の状態は自動的には更新されないため、別途更新が必要です。
@@ -162,10 +169,10 @@ class LoginViewModel @Inject constructor(
      * サーバーからデータをロードして、ローカルに保存する。
      * サーバーアクセスの結果を UI 状態に反映する。
      */
-    fun loadProfile(pat: String = "") {
+    fun loadProfile() {
         updateLoading(true)
         viewModelScope.launch {
-            val code = profileRepository.loadProfile(pat)
+            val code = profileRepository.loadProfile()
             updateResponseCode(code)
             updateLoading(false)
         }

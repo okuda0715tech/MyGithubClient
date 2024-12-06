@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
  * Note that exportSchema should be true in production databases.
  */
 
-@Database(entities = [LocalProfile::class], version = 1, exportSchema = false)
+@Database(entities = [LocalProfile::class, LocalUserRepo::class], version = 1, exportSchema = false)
 abstract class GithubDatabase : RoomDatabase() {
 
     abstract fun profileDao(): ProfileDao
