@@ -69,7 +69,7 @@ class DefaultProfileRepository @Inject constructor(
      * ローカルからデータを取得する.
      */
     override fun fetchProfileStream(): Flow<Profile?> {
-        return localDataSource.observe().map {
+        return localDataSource.observeUser().map {
             Log.v(TAG, "localDataSource is changed.")
             it?.toExternal()
         }

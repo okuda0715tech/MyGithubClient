@@ -13,7 +13,7 @@ interface ProfileDao {
     suspend fun upsert(profile: LocalProfile)
 
     @Query("SELECT * FROM profile")
-    fun observe(): Flow<LocalProfile?>
+    fun observeUser(): Flow<LocalProfile?>
 
     @Upsert
     suspend fun upsertUserRepos(userRepos: List<LocalUserRepo>)
