@@ -17,4 +17,8 @@ interface ProfileDao {
 
     @Upsert
     suspend fun upsertUserRepos(userRepos: List<LocalUserRepo>)
+
+    @Query("SELECT * FROM user_repos")
+    fun observeUserRepo(): Flow<List<LocalUserRepo>?>
+
 }

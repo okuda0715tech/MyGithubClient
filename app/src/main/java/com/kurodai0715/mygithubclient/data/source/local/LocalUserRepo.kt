@@ -10,4 +10,9 @@ data class LocalUserRepo(
     @PrimaryKey
     val id: Int,
     val name: String,
+    val ownerLogin: String,
+    val ownerAvatarUrl: String,
+    val description: String?,
+    val stargazersCount: Int,
+    val language: String?,
 )

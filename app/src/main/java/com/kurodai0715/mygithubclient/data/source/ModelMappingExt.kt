@@ -34,9 +34,19 @@ fun LocalProfile.toExternal() = Profile(
 fun NetworkUserRepo.toLocal() = LocalUserRepo(
     id = id,
     name = name,
+    ownerLogin = owner.login,
+    ownerAvatarUrl = owner.avatarUrl.toString(),
+    description = description,
+    stargazersCount = stargazersCount,
+    language = language,
 )
 
 fun LocalUserRepo.toExternal() = UserRepo(
     id = id,
     name = name,
+    ownerLogin = ownerLogin,
+    ownerAvatarUrl = ownerAvatarUrl,
+    description = description,
+    stargazersCount = stargazersCount,
+    language = language,
 )

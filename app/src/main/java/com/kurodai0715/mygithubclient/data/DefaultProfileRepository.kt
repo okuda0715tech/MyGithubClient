@@ -29,13 +29,6 @@ class DefaultProfileRepository @Inject constructor(
     private val githubPreferencesRepo: GithubPreferencesRepository,
 ) : ProfileRepository {
 
-    /**
-     * サーバーからデータをロードして、ローカルに保存する。
-     *
-     * ローカルのデータは保存する前にクリアする。
-     *
-     * @return サーバーからのレスポンスコード
-     */
     override suspend fun loadProfile(): Int {
         Log.v(TAG, "loadProfile is started.")
 
@@ -65,23 +58,13 @@ class DefaultProfileRepository @Inject constructor(
         }
     }
 
-    /**
-     * ローカルからデータを取得する.
-     */
     override fun fetchProfileStream(): Flow<Profile?> {
         return localDataSource.observeUser().map {
-            Log.v(TAG, "localDataSource is changed.")
+            Log.v(TAG, "localDataSource.observeUser() is changed.")
             it?.toExternal()
         }
     }
 
-    /**
-     * サーバーからデータをロードして、ローカルに保存する。
-     *
-     * ローカルのデータは保存する前にクリアする。
-     *
-     * @return サーバーからのレスポンスコード
-     */
     override suspend fun loadUserRepos(): Int {
         Log.v(TAG, "loadUserRepos is started.")
 
@@ -112,6 +95,19 @@ class DefaultProfileRepository @Inject constructor(
                     return@withContext 999
                 }
             }
+        }
+    }
+
+    override fun fetchUserReposStream(): Flow<List<UserRepo>?> {
+        return localDataSource.observeUserRepo().map { userRepos ->
+            Log.v(TAG, "localDataSource.observeUserRepo() is changed.")
+            val result = mutableListOf<UserRepo>()
+            if (userRepos != null) {
+                for (userRepo in userRepos) {
+                    result.add(userRepo.toExternal())
+                }
+            }
+            result
         }
     }
 }

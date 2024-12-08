@@ -13,8 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
@@ -42,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -52,6 +52,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.kurodai0715.mygithubclient.ui.theme.MyGithubClientTheme
 import com.kurodai0715.mygithubclient.R
 import com.kurodai0715.mygithubclient.data.Profile
+import com.kurodai0715.mygithubclient.data.UserRepo
 import com.kurodai0715.mygithubclient.ui.component.SurfaceButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,6 +96,7 @@ fun ProfileScreen(
 
         ProfileContent(
             profile = uiState.profile,
+            userRepos = uiState.userRepos,
             modifier = Modifier
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)
@@ -107,6 +109,7 @@ fun ProfileScreen(
 @Composable
 private fun ProfileContent(
     profile: Profile?,
+    userRepos: List<UserRepo>?,
     modifier: Modifier = Modifier
 ) {
     val appColorScheme = MaterialTheme.colorScheme
@@ -284,6 +287,13 @@ private fun ProfileContent(
                     fontWeight = FontWeight.Medium,
                 )
             }
+            LazyRow {
+                if (userRepos != null) {
+                    items(userRepos) { userRepo ->
+                        Repository(userRepo = userRepo)
+                    }
+                }
+            }
         }
         HorizontalDivider()
         Column(
@@ -364,6 +374,15 @@ private fun ProfileContent(
     }
 }
 
+@Composable
+private fun Repository(userRepo: UserRepo) {
+    Column {
+        Row {
+            Text(text = userRepo.ownerLogin)
+        }
+    }
+}
+
 @Preview(apiLevel = 34)
 @Composable
 private fun ScreenPreview() {
@@ -379,6 +398,26 @@ private fun ScreenPreview() {
                 email = "abcd@gmail.com",
                 bio = "Android Engineer",
                 following = 100,
+            ),
+            userRepos = listOf(
+                UserRepo(
+                    id = 1,
+                    name = "Suzuki Ichiro",
+                    ownerLogin = "Ichiro1234",
+                    ownerAvatarUrl = "",
+                    description = "#リポジトリの説明",
+                    stargazersCount = 100,
+                    language = "Java"
+                ),
+                UserRepo(
+                    id = 2,
+                    name = "Shohei Otani",
+                    ownerLogin = "Shohei5678",
+                    ownerAvatarUrl = "",
+                    description = "#二刀流プレイヤーの苦悩",
+                    stargazersCount = 10000,
+                    language = "Kotlin"
+                )
             ),
         )
     }
