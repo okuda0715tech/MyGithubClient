@@ -2,8 +2,11 @@ package com.kurodai0715.mygithubclient.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -19,24 +22,33 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.asFloatState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -266,7 +278,7 @@ private fun ProfileContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(appColorScheme.surface)
-                .padding(12.dp),
+                .padding(start = 12.dp, top = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
@@ -287,11 +299,32 @@ private fun ProfileContent(
                     fontWeight = FontWeight.Medium,
                 )
             }
-            LazyRow {
-                if (userRepos != null) {
-                    items(userRepos) { userRepo ->
-                        Repository(userRepo = userRepo)
-                    }
+        }
+        val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
+        val density = LocalDensity.current.density
+
+        val contentWidth =
+            remember {
+                // 画面幅の 7 割りの幅
+                mutableFloatStateOf((screenWidth / density) * 0.7f).asFloatState()
+            }
+
+        LazyRow(
+            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(appColorScheme.surface),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            if (userRepos != null) {
+                items(userRepos) { userRepo ->
+                    Repository(
+                        userRepo = userRepo,
+                        contentWidth = contentWidth.floatValue,
+                        appColorScheme = appColorScheme,
+                        appTypography = appTypography,
+                        appShapes = appShapes,
+                    )
                 }
             }
         }
@@ -374,13 +407,128 @@ private fun ProfileContent(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun Repository(userRepo: UserRepo) {
-    Column {
-        Row {
-            Text(text = userRepo.ownerLogin)
+private fun Repository(
+    userRepo: UserRepo,
+    contentWidth: Float,
+    appColorScheme: ColorScheme,
+    appTypography: Typography,
+    appShapes: Shapes,
+) {
+    SurfaceButton(
+        onClick = { /*TODO*/ },
+        shape = appShapes.extraSmall,
+        modifier = Modifier
+            .border(
+                border = BorderStroke(
+                    width = 0.1.dp,
+                    color = appColorScheme.outlineVariant
+                ),
+                shape = appShapes.extraSmall
+            )
+            .width(contentWidth.dp),
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                GlideImage(
+                    model = userRepo.ownerAvatarUrl,
+                    contentDescription = "user icon",
+                    loading = placeholder(ColorPainter(Color.LightGray)),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape),
+                    requestBuilderTransform = {
+                        it.skipMemoryCache(true) // メモリキャッシュをスキップ
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ディスクキャッシュを無効化
+                    }
+                )
+
+                Text(
+                    text = userRepo.ownerLogin,
+                    color = appColorScheme.outline,
+                    style = appTypography.labelMedium,
+                    fontWeight = FontWeight.Normal,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = userRepo.name,
+                maxLines = 1,
+                style = appTypography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = userRepo.description ?: "",
+                maxLines = 1,
+                style = appTypography.labelLarge,
+                fontWeight = FontWeight.Normal
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_star_24),
+                    contentDescription = stringResource(
+                        id = R.string.num_of_starred_icon_description
+                    ),
+                    modifier = Modifier.size(16.dp),
+                    tint = colorResource(id = R.color.yellow),
+                )
+                Text(
+                    text = userRepo.stargazersCount.toString(),
+                    color = appColorScheme.outline,
+                    style = appTypography.labelLarge,
+                    fontWeight = FontWeight.Normal,
+                )
+                if (userRepo.language != null) {
+                    val color = rememberLangColor(userRepo.language)
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clip(CircleShape)
+                            .background(color)
+                            .size(8.dp)
+                    )
+                    Text(
+                        text = userRepo.language,
+                        color = appColorScheme.outline,
+                        style = appTypography.labelLarge,
+                        fontWeight = FontWeight.Normal,
+                    )
+                }
+            }
         }
     }
+}
+
+@Composable
+private fun rememberLangColor(language: String): Color {
+
+    var color by remember {
+        mutableStateOf(Color.Gray)
+    }
+
+    color = when (language) {
+        "Java" -> colorResource(id = R.color.brown)
+        "Kotlin" -> colorResource(id = R.color.purple)
+        else -> Color.Gray
+    }
+
+    return color
 }
 
 @Preview(apiLevel = 34)
